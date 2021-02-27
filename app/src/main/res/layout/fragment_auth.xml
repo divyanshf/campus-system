@@ -1,0 +1,85 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="30dp"
+    android:paddingTop="80dp"
+    android:background="@drawable/background"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:textColor="@color/white"
+        android:text="Welcome!"
+        android:textSize="65sp"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lustria"
+        android:padding="5dp"
+        android:textColor="@color/white"
+        android:layout_below="@id/textView"
+        android:text="Nice to see you again"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="10dp"
+        android:background="@drawable/button"
+        android:elegantTextHeight="true"
+        android:elevation="100dp"
+        android:onClick="clicked"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/textView2"
+        android:text="Login"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lustria"
+        android:padding="5dp"
+        android:text="If not a member?"
+        android:layout_above="@id/register_button"
+        android:textColor="@color/black"
+        android:textSize="17sp"/>
+
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lustria"
+        android:padding="5dp"
+        android:layout_marginBottom="20dp"
+        android:text="Register"
+        android:background="@android:color/transparent"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/red"
+        android:textSize="15sp"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/skip_auth_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:src="@drawable/ic_baseline_arrow_forward_24"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

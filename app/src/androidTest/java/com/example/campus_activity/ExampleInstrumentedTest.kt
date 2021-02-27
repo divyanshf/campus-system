@@ -1,4 +1,4 @@
-package com.example.firebase
+package com.example.campus_activity
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
