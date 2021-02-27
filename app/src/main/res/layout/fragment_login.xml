@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="40dp"
+    android:paddingTop="60dp"
+    android:paddingRight="40dp"
+    android:background="@drawable/maskgroup">
+
+    <TextView
+        android:id="@+id/login_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/alegreya_bold"
+        android:text="Hello There!"
+        android:textSize="50sp"
+        android:textColor="@color/white"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/username_edit_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:layout_marginTop="25dp"
+        android:textColorHint="@color/white"
+        app:hintTextColor="@color/white"
+        app:boxStrokeColor="@color/white"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        android:layout_below="@id/login_title"
+        android:background="@android:color/transparent"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:id="@+id/username_edit_text"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_edit_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="Password"
+        app:passwordToggleEnabled="true"
+        android:textColorHint="@color/white"
+        app:hintTextColor="@color/white"
+        app:boxStrokeColor="@color/white"
+        app:passwordToggleTint="@color/white"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        android:layout_below="@id/username_edit_text_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginTop="25dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:id="@+id/password_edit_text"
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="10dp"
+        android:background="@drawable/button"
+        android:text="Login"
+        android:elevation="100dp"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/password_edit_text_layout"
+        tools:ignore="MissingConstraints" />
+
+</RelativeLayout>
