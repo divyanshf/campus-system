@@ -9,9 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Campus">
-        <activity android:name="com.example.campus_activity.ui.main.MainActivity">
+        <activity android:name=".ui.chat.ChatActivity">
         </activity>
-        <activity android:name="com.example.campus_activity.ui.auth.AuthActivity">
+        <activity android:name=".ui.main.MainActivity">
+        </activity>
+        <activity android:name=".ui.auth.AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

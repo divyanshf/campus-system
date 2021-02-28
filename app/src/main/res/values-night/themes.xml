@@ -14,8 +14,4 @@
         <item name="android:navigationBarColor" tools:targetApi="l">@android:color/transparent</item>
         <!-- Customize your theme here. -->
     </style>
-
-    <style name="Theme.Campus.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="Theme.Campus.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
