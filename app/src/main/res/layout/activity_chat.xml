@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.chat.ChatActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background"
+        android:layout_marginBottom="?attr/actionBarSize"
+        android:layout_marginTop="?attr/actionBarSize"
+        tools:listitem="@layout/card_message"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/chat_toolbar"
         android:layout_width="match_parent"
@@ -16,16 +26,6 @@
         app:titleTextColor="?attr/colorOnPrimary">
 
     </androidx.appcompat.widget.Toolbar>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chat_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_marginTop="?attr/actionBarSize"
-        tools:listitem="@layout/card_message"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/chat_bottom_app_bar"
