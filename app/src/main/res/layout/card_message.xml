@@ -2,10 +2,8 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="200dp"
-    android:maxWidth="300dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="?attr/colorPrimaryVariant"
+    app:cardBackgroundColor="@color/gray_dark"
     app:strokeWidth="0dp"
     android:layout_marginTop="10dp"
     android:layout_marginHorizontal="10dp">
@@ -13,6 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minWidth="200dp"
+        android:maxWidth="300dp"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/colorPrimary"
+            android:theme="@style/TextAppearance.MaterialComponents.Body2"
             android:text="Sender"/>
 
         <com.google.android.material.textview.MaterialTextView
@@ -29,7 +30,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textColor="?attr/colorOnPrimary"
+            android:theme="@style/TextAppearance.MaterialComponents.Body1"
             android:text="This is a message!"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/time_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="?attr/colorOnPrimary"
+            android:gravity="end"
+            android:theme="@style/TextAppearance.MaterialComponents.Caption"
+            android:textSize="10sp"
+            android:text="12:00 PM Aug 24, 2021"/>
 
     </LinearLayout>
 
