@@ -2,8 +2,6 @@ package com.example.campus_activity.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -41,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                     startFragment(homeFragment)
                 }
                 R.id.chatroom -> {
-                    val chatRoomFragment= ChatroomFragment()
+                    val chatRoomFragment= RoomListFragment()
                     startFragment(chatRoomFragment)
                 }
             }
