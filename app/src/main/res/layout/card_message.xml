@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="200dp"
+    android:maxWidth="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="?attr/colorPrimaryVariant"
+    app:strokeWidth="0dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginHorizontal="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/sender_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorPrimary"
+            android:text="Sender"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/message_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="?attr/colorOnPrimary"
+            android:text="This is a message!"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
