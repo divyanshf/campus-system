@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.ui.adapter.ChatAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
 import java.time.Instant
 import java.util.*
@@ -24,6 +26,7 @@ import kotlin.collections.ArrayList
 @RequiresApi(Build.VERSION_CODES.O)
 class ChatActivity : AppCompatActivity() {
     private lateinit var toolbar:Toolbar
+    private lateinit var messageEditText: TextInputEditText
     private lateinit var sendButton:FloatingActionButton
     private lateinit var recyclerView:RecyclerView
     private lateinit var recyclerViewAdapter: ChatAdapter
@@ -31,7 +34,7 @@ class ChatActivity : AppCompatActivity() {
 
     init {
         for(i in 0..10){
-            insertChat()
+            insertChat("Someone", "This is a message!", Timestamp(Date.from(Instant.now())))
         }
     }
 
@@ -40,6 +43,7 @@ class ChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat)
 
         toolbar = findViewById(R.id.chat_toolbar)
+        messageEditText = findViewById(R.id.message_edit_text)
         sendButton = findViewById(R.id.send_message_button)
         recyclerView = findViewById(R.id.chat_recycler_view)
         recyclerViewAdapter = ChatAdapter(this)
@@ -55,18 +59,22 @@ class ChatActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         sendButton.setOnClickListener {
-            insertChatOnClick()
+            if(messageEditText.text.toString() != ""){
+                insertChatOnClick(messageEditText.text.toString())
+                messageEditText.setText("")
+            }
         }
     }
 
-    private fun insertChat(): ChatModel {
-        val newChat = ChatModel("Someone", "This is a message!", Timestamp(Date.from(Instant.now())))
+    private fun insertChat(sender:String, message:String, timestamp: Timestamp): ChatModel {
+        val newChat = ChatModel(sender, message, timestamp)
         chats.add(newChat)
         return newChat
     }
 
-    private fun insertChatOnClick(){
-        recyclerViewAdapter.addChat(insertChat())
+    private fun insertChatOnClick(message:String){
+        insertChat("You", message, Timestamp(Date.from(Instant.now())))
+        recyclerViewAdapter.addChat()
         recyclerView.scrollToPosition(chats.size - 1)
     }
 
