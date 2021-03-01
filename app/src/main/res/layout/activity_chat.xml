@@ -10,10 +10,10 @@
         android:id="@+id/chat_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
         android:layout_marginBottom="?attr/actionBarSize"
         android:layout_marginTop="?attr/actionBarSize"
-        tools:listitem="@layout/card_message"
+        android:background="@drawable/background"
+        tools:listitem="@layout/sender_message_card"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     <androidx.appcompat.widget.Toolbar
