@@ -62,7 +62,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:id="@+id/username_edit_text"
+            android:id="@+id/username_login_edit_text"
             android:textColor="@color/white"
             android:layout_height="wrap_content"/>
 
@@ -89,13 +89,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:id="@+id/password_edit_text"
+            android:id="@+id/password_login_edit_text"
             android:inputType="textPassword" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
