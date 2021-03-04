@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="?attr/actionBarSize"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="@drawable/background"
         tools:listitem="@layout/sender_message_card"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
