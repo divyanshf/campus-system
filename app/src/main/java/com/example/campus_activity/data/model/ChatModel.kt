@@ -1,6 +1,5 @@
 package com.example.campus_activity.data.model
 
-import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.Timestamp
 

@@ -20,6 +20,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/date_text_view"
         app:cardBackgroundColor="@color/gray_dark"
+        app:cardCornerRadius="10sp"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/gray_dark"
         android:layout_alignParentEnd="true"
         android:layout_marginHorizontal="10dp">
 
