@@ -5,10 +5,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -22,12 +20,25 @@ import com.example.campus_activity.ui.main.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.time.Instant
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 @RequiresApi(Build.VERSION_CODES.O)
 class ChatActivity : AppCompatActivity() {
+
+    //  Test realtime database
+    private val fireDatabase = FirebaseDatabase.getInstance()
+    private var chatsCount : Long = 0
+    private val chatsReference = fireDatabase.getReference("chats")
+    private val testEndPoint = chatsReference.child("test")
+
+    //  Variable declaration
     private lateinit var toolbar:Toolbar
     private lateinit var messageEditText: TextInputEditText
     private lateinit var sendButton:FloatingActionButton
@@ -40,30 +51,49 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
+        //  Variable assignment
         toolbar = findViewById(R.id.chat_toolbar)
         messageEditText = findViewById(R.id.message_edit_text)
         sendButton = findViewById(R.id.send_message_button)
         recyclerView = findViewById(R.id.chat_recycler_view)
         recyclerViewAdapter = ChatAdapter(this)
         recyclerView.layoutManager = LinearLayoutManager(this)
-
         recyclerView.adapter = recyclerViewAdapter
 
-        Log.i("Adapter", "Set notes")
-        recyclerViewAdapter.setChats(chats)
-        recyclerView.scrollToPosition(chats.size - 1)
+        //  Chat realtime listener
+        val chatListener = object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.i("Change", snapshot.value.toString())
+                if(chats.size == 0){
+                    loadAllChats(snapshot)
+                }
+                else if(snapshot.childrenCount.toInt() > chatsCount){
+                    addNewChatsOnChange(snapshot)
+                }
+                chatsCount = snapshot.childrenCount
+            }
 
+            override fun onCancelled(error: DatabaseError) {
+            }
+        }
+
+        testEndPoint.addValueEventListener(chatListener)
+
+        //  Initialize action bar
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        //  Set the background of the chat
         window.setBackgroundDrawable(resources.getDrawable(R.drawable.background))
 
+        //  Scroll to bottom on keyboard pop
         recyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
             if(bottom < oldBottom){
                 recyclerView.smoothScrollToPosition(bottom)
             }
         }
 
+        //  Send message
         sendButton.setOnClickListener {
             if(messageEditText.text.toString() != ""){
                 insertChatOnClick(messageEditText.text.toString())
@@ -72,32 +102,72 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun insertRandomChats(){
-        for(i in 0..3){
-            insertChat("Someone", "This is a message!", Timestamp(Date.from(Instant.now())))
-            insertChat("You", "This is my message!", Timestamp(Date.from(Instant.now())))
-            recyclerViewAdapter.addChat()
+    //  Load chats on startup
+    private fun loadAllChats(snapshot : DataSnapshot){
+        try {
+            val array = snapshot.value as ArrayList<*>
+            for(i in array){
+                val newChat = convertToChat(i as HashMap<*, *>)
+                insertChat(newChat)
+            }
+            recyclerViewAdapter.setChats(chats)
+            recyclerView.scrollToPosition(chats.size - 1)
+        }catch (e:Exception){
+            e.printStackTrace()
         }
+    }
+
+    //  Add chats on change
+    private fun addNewChatsOnChange(snapshot: DataSnapshot){
+        try {
+            val newChatHash = (snapshot.value as ArrayList<*>)[snapshot.childrenCount.toInt() - 1] as HashMap<*,*>
+            val newChat = convertToChat(newChatHash)
+            insertChat(newChat)
+            recyclerViewAdapter.addChat()
+            recyclerView.scrollToPosition(chats.size - 1)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+
+    //  Convert map to chat model
+    private fun convertToChat(hashMap: HashMap<*, *>) : ChatModel{
+        return ChatModel(
+                hashMap["id"] as Long,
+                hashMap["sender"] as String,
+                hashMap["message"]as String,
+                convertToTimestamp(hashMap["timestamp"] as HashMap<*, *>)
+        )
+    }
+
+    //  Convert map to timestamp
+    private fun convertToTimestamp(hashMap: HashMap<*, *>) : Timestamp{
+        return Timestamp(hashMap["seconds"] as Long, (hashMap["nanoseconds"] as Long).toInt())
+    }
+
+    //  Insert chat by model
+    private fun insertChat(chat:ChatModel): ChatModel {
+        chats.add(chat)
         recyclerView.scrollToPosition(chats.size - 1)
+        return chat
     }
 
-    private fun insertChat(sender:String, message:String, timestamp: Timestamp): ChatModel {
-        val newChat = ChatModel(sender, message, timestamp)
-        chats.add(newChat)
-        return newChat
-    }
-
+    //  Insert message by "You"
     private fun insertChatOnClick(message:String){
-        insertChat("You", message, Timestamp(Date.from(Instant.now())))
-        recyclerViewAdapter.addChat()
-        recyclerView.scrollToPosition(chats.size - 1)
+        val time = Timestamp(Date.from(Instant.now()))
+        val newChat = ChatModel(chatsCount,"You", message, time)
+
+        //  Test database
+        testEndPoint.child("$chatsCount").setValue(newChat)
     }
 
+    //  Options create
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_chat_activity, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
+    //  Option selected
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             android.R.id.home -> {
@@ -106,7 +176,7 @@ class ChatActivity : AppCompatActivity() {
                 true
             }
             R.id.random_chats -> {
-                insertRandomChats()
+                Toast.makeText(this, "Random test", Toast.LENGTH_SHORT).show()
                 true
             }
             else -> false
