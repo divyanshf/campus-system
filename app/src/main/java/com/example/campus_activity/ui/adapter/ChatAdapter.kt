@@ -1,15 +1,20 @@
 package com.example.campus_activity.ui.adapter
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ChatAdapter
 constructor(
@@ -63,8 +68,7 @@ constructor(
         notifyItemInserted(chats.size - 1)
     }
 
-    class SenderChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
-        var messageCard: MaterialCardView = itemView.findViewById(R.id.message_card)
+    inner class SenderChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         var senderView: TextView = itemView.findViewById(R.id.sender_name)
         var messageView:TextView = itemView.findViewById(R.id.message_text_view)
         var dateView:TextView = itemView.findViewById(R.id.date_text_view)
@@ -84,23 +88,21 @@ constructor(
         }
     }
 
-    class ReceiverChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
+    inner class ReceiverChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
         var messageCard: MaterialCardView = itemView.findViewById(R.id.message_card)
-//        var senderView: TextView = itemView.findViewById(R.id.sender_name)
         var messageView:TextView = itemView.findViewById(R.id.message_text_view)
         var dateView:TextView = itemView.findViewById(R.id.date_text_view)
         var timeView:TextView = itemView.findViewById(R.id.time_text_view)
 
         @SuppressLint("SetTextI18n")
         fun bind(currentChat:ChatModel){
-//            senderView.text = currentChat.sender
             messageView.text = currentChat.message
             val timestamp = currentChat.timestamp.toDate().toString()
             val date = timestamp.substring(4, 10)
             val year = timestamp.substring(timestamp.length - 4, timestamp.length)
             dateView.text = "$date, $year"
-
             timeView.text = timestamp.substring(11, 16)
+
         }
     }
 
