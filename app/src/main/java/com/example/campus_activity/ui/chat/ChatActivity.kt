@@ -2,11 +2,14 @@ package com.example.campus_activity.ui.chat
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +27,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.net.URI
 import java.time.Instant
 import java.util.*
 import kotlin.collections.ArrayList
@@ -40,11 +44,14 @@ class ChatActivity : AppCompatActivity() {
 
     //  Variable declaration
     private lateinit var toolbar:Toolbar
+    private lateinit var progressBar:ProgressBar
     private lateinit var messageEditText: TextInputEditText
     private lateinit var sendButton:FloatingActionButton
     private lateinit var recyclerView:RecyclerView
     private lateinit var recyclerViewAdapter: ChatAdapter
     private var chats:ArrayList<ChatModel> = ArrayList()
+    private var backgroundUri:Uri? = null
+    private var backgroundPath: String? = null
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +60,7 @@ class ChatActivity : AppCompatActivity() {
 
         //  Variable assignment
         toolbar = findViewById(R.id.chat_toolbar)
+        progressBar = findViewById(R.id.chat_progress_bar)
         messageEditText = findViewById(R.id.message_edit_text)
         sendButton = findViewById(R.id.send_message_button)
         recyclerView = findViewById(R.id.chat_recycler_view)
@@ -63,7 +71,6 @@ class ChatActivity : AppCompatActivity() {
         //  Chat realtime listener
         val chatListener = object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("Change", snapshot.value.toString())
                 if(chats.size == 0){
                     loadAllChats(snapshot)
                 }
@@ -115,6 +122,7 @@ class ChatActivity : AppCompatActivity() {
         }catch (e:Exception){
             e.printStackTrace()
         }
+        progressBar.visibility = View.INVISIBLE
     }
 
     //  Add chats on change
@@ -175,8 +183,7 @@ class ChatActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
-            R.id.random_chats -> {
-                Toast.makeText(this, "Random test", Toast.LENGTH_SHORT).show()
+            R.id.change_background -> {
                 true
             }
             else -> false

@@ -6,25 +6,17 @@
     android:layout_width="match_parent"
     android:layout_marginVertical="5dp">
 
-    <TextView
-        android:id="@+id/date_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/gray_light"
-        android:text="March 1, 2021"/>
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/message_card"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/date_text_view"
         app:cardBackgroundColor="@color/gray_dark"
         app:cardCornerRadius="10sp"
         app:strokeWidth="2dp"
         app:strokeColor="@color/gray_dark"
         android:layout_alignParentEnd="false"
-        android:layout_marginHorizontal="10dp">
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="100dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,12 +33,14 @@
 
             <TextView
                 android:id="@+id/message_text_view"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:layout_gravity="end"
                 android:layout_marginTop="5dp"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="15sp"
-                android:text="This is a message!"/>
+                android:text="@string/this_is_a_message"/>
 
             <TextView
                 android:id="@+id/time_text_view"
@@ -56,7 +50,7 @@
                 android:layout_gravity="end"
                 android:textColor="@color/gray_light"
                 android:textSize="12sp"
-                android:text="12:00 PM"/>
+                android:text="@string/time"/>
 
         </LinearLayout>
 
