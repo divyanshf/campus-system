@@ -18,4 +18,13 @@
     <string name="this_is_a_message">This is a message!</string>
     <string name="date">March 1, 2021</string>
     <string name="time">12:00 PM</string>
+
+    <!--feeds testing strings-->
+    <string name="sender_name">Home Work</string>
+    <string name="desig_name">Group Leader</string>
+    <string name="text">Contrary to popular belief,
+        Lorem Ipsum is not simply random text.
+        It has roots in a piece of classical Latin
+        literature from 45 BC, making it over 2000 years old.
+    </string>
 </resources>
