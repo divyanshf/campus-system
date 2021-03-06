@@ -2,6 +2,7 @@ package com.example.campus_activity.ui.chat
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +27,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.net.URI
 import java.time.Instant
 import java.util.*
 import kotlin.collections.ArrayList
@@ -48,6 +50,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var recyclerView:RecyclerView
     private lateinit var recyclerViewAdapter: ChatAdapter
     private var chats:ArrayList<ChatModel> = ArrayList()
+    private var backgroundUri:Uri? = null
+    private var backgroundPath: String? = null
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -179,8 +183,7 @@ class ChatActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
-            R.id.random_chats -> {
-                Toast.makeText(this, "Random test", Toast.LENGTH_SHORT).show()
+            R.id.change_background -> {
                 true
             }
             else -> false
