@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -40,6 +42,7 @@ class ChatActivity : AppCompatActivity() {
 
     //  Variable declaration
     private lateinit var toolbar:Toolbar
+    private lateinit var progressBar:ProgressBar
     private lateinit var messageEditText: TextInputEditText
     private lateinit var sendButton:FloatingActionButton
     private lateinit var recyclerView:RecyclerView
@@ -53,6 +56,7 @@ class ChatActivity : AppCompatActivity() {
 
         //  Variable assignment
         toolbar = findViewById(R.id.chat_toolbar)
+        progressBar = findViewById(R.id.chat_progress_bar)
         messageEditText = findViewById(R.id.message_edit_text)
         sendButton = findViewById(R.id.send_message_button)
         recyclerView = findViewById(R.id.chat_recycler_view)
@@ -63,7 +67,6 @@ class ChatActivity : AppCompatActivity() {
         //  Chat realtime listener
         val chatListener = object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("Change", snapshot.value.toString())
                 if(chats.size == 0){
                     loadAllChats(snapshot)
                 }
@@ -115,6 +118,7 @@ class ChatActivity : AppCompatActivity() {
         }catch (e:Exception){
             e.printStackTrace()
         }
+        progressBar.visibility = View.INVISIBLE
     }
 
     //  Add chats on change

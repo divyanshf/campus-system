@@ -12,8 +12,15 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="?attr/actionBarSize"
         android:layout_marginTop="?attr/actionBarSize"
-        tools:listitem="@layout/sender_message_card"
+        tools:listitem="@layout/card_sender_message"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    <ProgressBar
+        android:id="@+id/chat_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"/>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/chat_toolbar"
