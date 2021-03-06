@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/fragment"
         android:gravity="start"
         android:layout_width="match_parent"
@@ -23,14 +24,25 @@
             app:title="@string/app_name"
             android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/feeds_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="4dp"
+            tools:listitem="@layout/feed_card"
+            android:layout_below="@+id/my_toolbar"
+            android:layout_above="@+id/bottom_navigation_bar"/>
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
             app:menu="@menu/bottom_nav_menu" />
 
-    </FrameLayout>
+    </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/drawer_navigation_view"
