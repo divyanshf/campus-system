@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:title="Item1"/>
-    <item
-        android:title="Item2"/>
-    <item
-        android:title="Item3"/>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/ichome"
+            android:icon="@drawable/ichome"
+            android:title="Home" />
+        <item
+            android:id="@+id/icchat"
+            android:icon="@drawable/icperson"
+            android:title="Chat" />
+
+    </group>
+    <group android:checkableBehavior="single">
+
+        <item android:title="Profile">
+
+            <menu>
+                <item
+                    android:id="@+id/iclogout"
+                    android:icon="@drawable/ic_baseline_subdirectory_arrow_right_24"
+                    android:title="Logout" />
+            </menu>
+
+
+        </item>
+
+    </group>
+
+
 </menu>
