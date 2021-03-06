@@ -17,8 +17,10 @@ import com.google.firebase.auth.FirebaseAuth
 class LoginFragment : Fragment() {
 
 
-    lateinit var txtname : EditText
-    lateinit var txtpassword : EditText
+    lateinit var editYear: EditText
+    lateinit var editBatch: EditText
+    lateinit var editRoll: EditText
+    lateinit var txtPassword : EditText
     lateinit var btnlogin : Button
     lateinit var firebaseAuth: FirebaseAuth
 
@@ -30,8 +32,10 @@ class LoginFragment : Fragment() {
 
         firebaseAuth =FirebaseAuth.getInstance()
 
-        txtname= view.findViewById(R.id.username_login_edit_text)
-        txtpassword=view.findViewById(R.id.password_login_edit_text)
+        editYear = view.findViewById(R.id.year_login_edit_text)
+        editBatch = view.findViewById(R.id.batch_login_edit_text)
+        editRoll = view.findViewById(R.id.roll_login_edit_text)
+        txtPassword=view.findViewById(R.id.password_login_edit_text)
         btnlogin= view.findViewById(R.id.login_button)
 
         btnlogin.setOnClickListener {
@@ -42,8 +46,11 @@ class LoginFragment : Fragment() {
 
     private fun login()
     {
-        val email :String = txtname.text.toString()
-        val password : String = txtpassword.text.toString()
+        val year :String = editYear.text.toString()
+        val batch :String = editBatch.text.toString()
+        val roll :String = editRoll.text.toString()
+        val email: String = rollToMail(year , batch , roll)
+        val password : String = txtPassword.text.toString()
 
         if(email.isBlank()||password.isBlank())
         {
@@ -71,6 +78,10 @@ class LoginFragment : Fragment() {
 
 
 
+    }
+    private fun rollToMail(y: String , b : String, r : String): String {
+
+        return (b.toLowerCase().plus("_").plus(y).plus(r).plus("@iiitm.ac.in"))
     }
 
 }
