@@ -7,9 +7,9 @@
         android:start="1dp">
         <shape android:shape="oval">
             <solid android:color="#FFFFFF" />
-            <stroke
-                android:width="0.5dp"
-                android:color="@color/gray_light" />
+<!--            <stroke-->
+<!--                android:width="0.5dp"-->
+<!--                android:color="@color/gray_light" />-->
         </shape>
     </item>
 </layer-list>
