@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/fragment"
+        android:id="@+id/relative_layout"
         android:gravity="start"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,13 +24,11 @@
             app:title="@string/app_name"
             android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/feeds_recycler_view"
+        <FrameLayout
+            android:id="@+id/fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
             android:padding="4dp"
-            tools:listitem="@layout/feed_card"
             android:layout_below="@+id/my_toolbar"
             android:layout_above="@+id/bottom_navigation_bar"/>
 

@@ -4,16 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.main.HomeFragment"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/feeds_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Home"
-        android:textSize="100dp"
-        android:textColor="@color/red"
-        android:gravity="center"
-        />
+        android:clipToPadding="false"
+        android:padding="4dp"
+        tools:listitem="@layout/feed_card"/>
 
 </FrameLayout>

@@ -27,13 +27,16 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import dagger.hilt.android.AndroidEntryPoint
 import java.net.URI
 import java.time.Instant
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 @RequiresApi(Build.VERSION_CODES.O)
+@AndroidEntryPoint
 class ChatActivity : AppCompatActivity() {
 
     //  Test realtime database
@@ -42,13 +45,16 @@ class ChatActivity : AppCompatActivity() {
     private val chatsReference = fireDatabase.getReference("chats")
     private val testEndPoint = chatsReference.child("test")
 
+    //  Hilt variables
+    @Inject
+    lateinit var recyclerViewAdapter: ChatAdapter
+
     //  Variable declaration
     private lateinit var toolbar:Toolbar
     private lateinit var progressBar:ProgressBar
     private lateinit var messageEditText: TextInputEditText
     private lateinit var sendButton:FloatingActionButton
     private lateinit var recyclerView:RecyclerView
-    private lateinit var recyclerViewAdapter: ChatAdapter
     private var chats:ArrayList<ChatModel> = ArrayList()
     private var backgroundUri:Uri? = null
     private var backgroundPath: String? = null
@@ -64,7 +70,7 @@ class ChatActivity : AppCompatActivity() {
         messageEditText = findViewById(R.id.message_edit_text)
         sendButton = findViewById(R.id.send_message_button)
         recyclerView = findViewById(R.id.chat_recycler_view)
-        recyclerViewAdapter = ChatAdapter(this)
+
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = recyclerViewAdapter
 
