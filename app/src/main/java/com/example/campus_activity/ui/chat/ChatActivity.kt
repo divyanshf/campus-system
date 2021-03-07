@@ -23,6 +23,7 @@ import com.example.campus_activity.ui.main.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -48,6 +49,8 @@ class ChatActivity : AppCompatActivity() {
     //  Hilt variables
     @Inject
     lateinit var recyclerViewAdapter: ChatAdapter
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
     //  Variable declaration
     private lateinit var toolbar:Toolbar
@@ -149,6 +152,7 @@ class ChatActivity : AppCompatActivity() {
         return ChatModel(
                 hashMap["id"] as Long,
                 hashMap["sender"] as String,
+                hashMap["senderMail"] as String,
                 hashMap["message"]as String,
                 convertToTimestamp(hashMap["timestamp"] as HashMap<*, *>)
         )
@@ -169,7 +173,8 @@ class ChatActivity : AppCompatActivity() {
     //  Insert message by "You"
     private fun insertChatOnClick(message:String){
         val time = Timestamp(Date.from(Instant.now()))
-        val newChat = ChatModel(chatsCount,"You", message, time)
+        val user = firebaseAuth.currentUser
+        val newChat = ChatModel(chatsCount, user?.displayName!!, user?.email!!, message, time)
 
         //  Test database
         testEndPoint.child("$chatsCount").setValue(newChat)
