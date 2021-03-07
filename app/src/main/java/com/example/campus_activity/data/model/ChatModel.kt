@@ -9,9 +9,10 @@ import org.jetbrains.annotations.NotNull
 data class ChatModel(
     @PrimaryKey(autoGenerate = true) @NotNull var id:Long,
     @NotNull var sender:String,
+    @NotNull var senderMail:String,
     @NotNull var message:String,
     @NotNull var timestamp: Timestamp
 ){
-    constructor(sender:String, message:String, timestamp: Timestamp) : this(0, sender, message, timestamp)
+    constructor(sender:String, senderMail: String, message:String, timestamp: Timestamp) : this(0, sender, senderMail, message, timestamp)
 }
 
