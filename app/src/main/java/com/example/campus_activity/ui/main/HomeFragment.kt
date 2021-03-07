@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.FeedModel
 import com.example.campus_activity.ui.adapter.FeedAdapter
+import com.google.firebase.Timestamp
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -44,8 +45,9 @@ class HomeFragment : Fragment() {
 
     private fun generateDummyList(size: Int): List<FeedModel> {
         val list = ArrayList<FeedModel>()
+        val text = "Contrary to popular belief Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old."
         for (i in 0 until size) {
-            val item = FeedModel("Abhigyan Abhikaushalam Students Forum", "Posted by Yuvaan", "00:00")
+            val item = FeedModel("XXXYYYY", "Abhigyan Abhikaushalam Students Forum", "Posted by Yuvaan", text, Timestamp.now())
             list += item
         }
         return list

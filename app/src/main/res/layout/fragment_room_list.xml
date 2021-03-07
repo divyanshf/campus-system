@@ -6,13 +6,10 @@
     tools:context=".ui.main.RoomListFragment"
     android:background="@color/white">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Room"
-        android:textSize="100dp"
-        android:textColor="@color/red"
-        android:gravity="center"
-        />
+        tools:listitem="@layout/card_room" />
 
 </FrameLayout>
