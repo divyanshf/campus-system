@@ -1,5 +1,8 @@
 package com.example.campus_activity.data.model
 
-class FeedModel(val sender_name : String, val post: String, val time : String) {
-
-}
+data class FeedModel(
+    var id: String,
+    var sender_name: String,
+    var post: String,
+    var time: String
+    )
