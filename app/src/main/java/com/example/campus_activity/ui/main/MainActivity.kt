@@ -9,14 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
-import com.example.campus_activity.data.model.FeedList
-import com.example.campus_activity.ui.adapter.FeedRecyclerViewAdapter
+import com.example.campus_activity.data.model.FeedModel
+import com.example.campus_activity.ui.adapter.FeedAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var linearLayoutManager: LinearLayoutManager
-    private lateinit var feedsRecyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,9 +27,6 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val toolbar: Toolbar = findViewById(R.id.my_toolbar)
         val bottomNavigation : BottomNavigationView = findViewById(R.id.bottom_navigation_bar)
-
-        //  Set action bar
-        setSupportActionBar(toolbar)
 
         //  Set drawer toggle
         val drawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar,
@@ -56,26 +54,9 @@ class MainActivity : AppCompatActivity() {
         //  Initialize as home
         bottomNavigation.selectedItemId = R.id.home
 
-        val FeedList = generateDummyList(10)
+        //  Set action bar
+        setSupportActionBar(toolbar)
 
-        feedsRecyclerView = findViewById(R.id.feeds_recycler_view)
-
-        feedsRecyclerView.adapter = FeedRecyclerViewAdapter(FeedList)
-
-        linearLayoutManager = LinearLayoutManager(this)
-
-        feedsRecyclerView.layoutManager = linearLayoutManager
-
-        feedsRecyclerView.setHasFixedSize(true)
-    }
-
-    private fun generateDummyList(size: Int): List<FeedList> {
-        val list = ArrayList<FeedList>()
-        for (i in 0 until size) {
-            val item = FeedList("Item $i", "Line 2", "1`2")
-            list += item
-        }
-        return list
     }
 
     //  Start a fragment

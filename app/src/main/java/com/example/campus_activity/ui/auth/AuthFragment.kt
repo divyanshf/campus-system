@@ -12,14 +12,14 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.campus_activity.R
 import com.example.campus_activity.ui.main.MainActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AuthFragment : Fragment(), View.OnClickListener {
     private var navController: NavController? = null
 
-
-    lateinit var firebaseauth :FirebaseAuth
+    private lateinit var firebaseauth :FirebaseAuth
 
     @SuppressLint("ResourceAsColor")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -27,10 +27,6 @@ class AuthFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_auth, container, false)
         firebaseauth = FirebaseAuth.getInstance()
-        view.findViewById<FloatingActionButton>(R.id.skip_auth_button).setOnClickListener {
-            val mainIntent = Intent(context, MainActivity::class.java)
-            startActivity(mainIntent)
-        }
 
         return view
     }
@@ -45,18 +41,16 @@ class AuthFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.login_button -> {
-                if (firebaseauth.currentUser != null) {
-                    val directmainintent = Intent(context, MainActivity::class.java)
-                    directmainintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(directmainintent)
-                    activity?.finish()
-
-                } else {
-                    navController!!.navigate(R.id.action_authFragment_to_loginFragment)
-                }
+                navController!!.navigate(R.id.action_authFragment_to_loginFragment)
             }
             R.id.register_button -> {
                 navController!!.navigate(R.id.action_authFragment_to_registerFragment)
+            }
+            R.id.skip_auth_button -> {
+                val mainIntent = Intent(context, MainActivity::class.java)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(mainIntent)
             }
         }
     }

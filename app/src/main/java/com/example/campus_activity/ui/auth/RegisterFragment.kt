@@ -1,6 +1,7 @@
 package com.example.campus_activity.ui.auth
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,20 +11,23 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.example.campus_activity.R
+import com.example.campus_activity.ui.main.MainActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
+@AndroidEntryPoint
 class RegisterFragment : Fragment() {
 
-
-    lateinit var editYear: EditText
-    lateinit var editBatch: EditText
-    lateinit var editRoll: EditText
-    lateinit var editPassword: EditText
-    lateinit var editConPassword: EditText
-    lateinit var editName : EditText
-    lateinit var fireBaseAuth: FirebaseAuth
-    lateinit var btn: Button
-
+    private lateinit var editYear: EditText
+    private lateinit var editBatch: EditText
+    private lateinit var editRoll: EditText
+    private lateinit var editPassword: EditText
+    private lateinit var editConPassword: EditText
+    private lateinit var editName : EditText
+    private lateinit var fireBaseAuth: FirebaseAuth
+    private lateinit var btn: Button
 
     @SuppressLint("ResourceAsColor")
     override fun onCreateView(
@@ -42,27 +46,26 @@ class RegisterFragment : Fragment() {
 
         btn = view.findViewById(R.id.register_button)
         btn.setOnClickListener {
-            signupuser()
+            signUpUser()
         }
         return view
     }
 
-    private fun signupuser() {
-
+    //  Register user
+    private fun signUpUser() {
         val name : String = editName.text.toString()
         val year :String = editYear.text.toString()
         val batch :String = editBatch.text.toString()
         val roll :String = editRoll.text.toString()
         val email: String = rollToMail(year , batch , roll)
         val password: String = editPassword.text.toString()
-        val confirmpass: String = editConPassword.text.toString()
+        val confirmPass: String = editConPassword.text.toString()
 
-
-        if (name.isBlank()||email.isBlank() || password.isBlank() || confirmpass.isBlank()) {
+        if (name.isBlank()||email.isBlank() || password.isBlank() || confirmPass.isBlank()) {
             Toast.makeText(activity, "Blank Fields are not allowed", Toast.LENGTH_SHORT).show()
             return
         }
-        if (password != confirmpass) {
+        if (password != confirmPass) {
             Toast.makeText(activity, "Password do not match", Toast.LENGTH_SHORT).show()
             return
         }
@@ -70,19 +73,28 @@ class RegisterFragment : Fragment() {
         fireBaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Toast.makeText(activity, "User is successfully created", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(activity, "User is successfully created", Toast.LENGTH_SHORT).show()
+
+                    //  Set the display name of the user
+                    fireBaseAuth.currentUser?.updateProfile(
+                        UserProfileChangeRequest.Builder()
+                            .setDisplayName(name)
+                            .build()
+                    )
+
+                    //  Start main activity
+                    val intent = Intent(activity, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
                 } else {
                     Toast.makeText(activity, "Error creating User", Toast.LENGTH_SHORT).show()
                 }
             }
-
-
     }
 
     private fun rollToMail(y: String , b : String, r : String): String {
-
-        return (b.toLowerCase().plus("_").plus(y).plus(r).plus("@iiitm.ac.in"))
+        return (b.toLowerCase(Locale.ROOT).plus("_").plus(y).plus(r).plus("@iiitm.ac.in"))
     }
 
 }

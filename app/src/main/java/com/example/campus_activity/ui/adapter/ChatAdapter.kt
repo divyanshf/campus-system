@@ -11,10 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.google.android.material.card.MaterialCardView
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityScoped
+import javax.inject.Inject
 
+@ActivityScoped
 class ChatAdapter
+@Inject
 constructor(
-        context: Context
+    @ActivityContext
+    context: Context
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val VIEW_TYPE_SENDER = 1
     private val VIEW_TYPE_RECEIVER = 2
