@@ -25,7 +25,7 @@ constructor(
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
-        val view = mInflater.inflate(R.layout.feed_card, viewGroup, false)
+        val view = mInflater.inflate(R.layout.card_feed, viewGroup, false)
         return ViewHolder(view)
     }
 

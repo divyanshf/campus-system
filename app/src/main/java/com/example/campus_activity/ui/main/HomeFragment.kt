@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
     private fun generateDummyList(size: Int): List<FeedModel> {
         val list = ArrayList<FeedModel>()
         for (i in 0 until size) {
-            val item = FeedModel("Item $i", "Line 2", "1`2")
+            val item = FeedModel("Abhigyan Abhikaushalam Students Forum", "Posted by Yuvaan", "00:00")
             list += item
         }
         return list
