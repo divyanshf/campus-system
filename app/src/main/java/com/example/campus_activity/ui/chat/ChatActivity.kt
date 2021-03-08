@@ -20,6 +20,7 @@ import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.ui.adapter.ChatAdapter
 import com.example.campus_activity.ui.main.MainActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
@@ -44,7 +45,7 @@ class ChatActivity : AppCompatActivity() {
     private val fireDatabase = FirebaseDatabase.getInstance()
     private var chatsCount : Long = 0
     private val chatsReference = fireDatabase.getReference("chats")
-    private val testEndPoint = chatsReference.child("test")
+    private var testEndPoint = chatsReference.child("test")
 
     //  Hilt variables
     @Inject
@@ -58,9 +59,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messageEditText: TextInputEditText
     private lateinit var sendButton:FloatingActionButton
     private lateinit var recyclerView:RecyclerView
+    private lateinit var fabScrollToBottom:FloatingActionButton
     private var chats:ArrayList<ChatModel> = ArrayList()
-    private var backgroundUri:Uri? = null
-    private var backgroundPath: String? = null
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,9 +73,11 @@ class ChatActivity : AppCompatActivity() {
         messageEditText = findViewById(R.id.message_edit_text)
         sendButton = findViewById(R.id.send_message_button)
         recyclerView = findViewById(R.id.chat_recycler_view)
+        fabScrollToBottom = findViewById(R.id.foa_scroll_to_bottom)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = recyclerViewAdapter
+        fabScrollToBottom.hide()
 
         //  Chat realtime listener
         val chatListener = object : ValueEventListener{
@@ -93,8 +95,6 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
-        testEndPoint.addValueEventListener(chatListener)
-
         //  Initialize action bar
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -109,12 +109,44 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
+        setUpScrollToBottom()
+
         //  Send message
         sendButton.setOnClickListener {
             if(messageEditText.text.toString() != ""){
                 insertChatOnClick(messageEditText.text.toString())
                 messageEditText.setText("")
             }
+        }
+
+        //  Add listener to database
+        try {
+            val roomName = intent.getStringExtra("roomName")!!
+            testEndPoint = chatsReference.child(intent.getStringExtra("roomName")!!)
+            supportActionBar?.setTitle(roomName)
+        }catch (e:Exception){
+            Toast.makeText(this, "Unidentified room!", Toast.LENGTH_SHORT).show()
+        }
+        testEndPoint.addValueEventListener(chatListener)
+    }
+
+    private fun setUpScrollToBottom(){
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val currentPosition = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+
+                if(currentPosition == chats.size - 1){
+                    fabScrollToBottom.hide()
+                }
+                else{
+                    fabScrollToBottom.show()
+                }
+
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        })
+        fabScrollToBottom.setOnClickListener {
+            recyclerView.smoothScrollToPosition(recyclerView.bottom)
         }
     }
 
@@ -193,7 +225,7 @@ class ChatActivity : AppCompatActivity() {
                 finish()
                 true
             }
-            R.id.change_background -> {
+            R.id.search_chat -> {
                 true
             }
             else -> false
