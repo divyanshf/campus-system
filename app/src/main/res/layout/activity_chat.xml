@@ -29,15 +29,26 @@
         android:layout_gravity="top"
         android:background="?attr/colorPrimaryVariant"
         android:theme="@style/ChatToolbar"
-        app:titleTextColor="?attr/colorOnPrimary">
+        app:titleTextColor="?attr/colorOnPrimary"/>
 
-    </androidx.appcompat.widget.Toolbar>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/foa_scroll_to_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/chat_bottom_app_bar"
+        android:scaleType="center"
+        app:fabCustomSize="30dp"
+        android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
+        android:contentDescription="Scroll to bottom" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/chat_bottom_app_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
+        app:fabAlignmentMode="end"
+        app:fabAnimationMode="scale"
+        app:fabCradleVerticalOffset="?attr/actionBarSize"
         android:gravity="center">
 
         <LinearLayout
