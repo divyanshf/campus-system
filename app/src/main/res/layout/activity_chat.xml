@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,9 +9,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chat_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/chat_bottom_app_bar"
+        android:layout_below="@id/chat_toolbar"
         tools:listitem="@layout/card_sender_message"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
@@ -19,67 +19,81 @@
         android:id="@+id/chat_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_centerInParent="true"
         android:visibility="visible"/>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/chat_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="top"
         android:background="?attr/colorPrimaryVariant"
         android:theme="@style/ChatToolbar"
+        android:layout_alignParentTop="true"
         app:titleTextColor="?attr/colorOnPrimary"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/chat_date_mat_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/chat_recycler_view"
+        android:layout_centerHorizontal="true"
+        app:cardBackgroundColor="@color/gray_light">
+
+        <TextView
+            android:id="@+id/chat_date_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/gray"
+            android:text="@string/date"/>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/foa_scroll_to_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_anchor="@id/chat_bottom_app_bar"
         android:scaleType="center"
         app:fabCustomSize="30dp"
+        android:layout_above="@id/chat_bottom_app_bar"
+        android:layout_alignEnd="@id/chat_bottom_app_bar"
+        android:layout_margin="20dp"
         android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
         android:contentDescription="Scroll to bottom" />
 
-    <com.google.android.material.bottomappbar.BottomAppBar
+    <LinearLayout
         android:id="@+id/chat_bottom_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom"
-        app:fabAlignmentMode="end"
-        app:fabAnimationMode="scale"
-        app:fabCradleVerticalOffset="?attr/actionBarSize"
-        android:gravity="center">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:padding="5dp">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/message_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/send_message_edit_text_background"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="15dp"
+            android:hint="@string/type_a_message"
+            android:textColor="@color/gray"
+            android:textColorHint="@color/gray"
+            android:inputType="textMultiLine"/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/message_edit_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/send_message_edit_text_background"
-                android:paddingHorizontal="20dp"
-                android:hint="@string/type_a_message"
-                android:textColor="@color/gray"
-                android:textColorHint="@color/gray"
-                android:inputType="text"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/send_message_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:contentDescription="@string/send"
+            android:src="@drawable/ic_baseline_send_24"
+            app:elevation="0dp" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/send_message_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/send"
-                android:src="@drawable/ic_baseline_send_24"
-                app:elevation="0dp" />
+    </LinearLayout>
 
-        </LinearLayout>
-
-    </com.google.android.material.bottomappbar.BottomAppBar>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>
