@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,7 +23,8 @@ class ChatAdapter
 @Inject
 constructor(
     @ActivityContext
-    context: Context
+    context: Context,
+    firebaseAuth: FirebaseAuth
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val VIEW_TYPE_SENDER = 1
     private val VIEW_TYPE_RECEIVER = 2
@@ -30,7 +32,7 @@ constructor(
     private val VIEW_TYPE_DATE_RECEIVER = 4
     private val mInflater = LayoutInflater.from(context)
     private var chats:ArrayList<ChatModel> = ArrayList()
-    private val name = "You"
+    private val senderMail = firebaseAuth.currentUser?.email
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val itemView:View
@@ -57,7 +59,7 @@ constructor(
     override fun getItemViewType(position: Int): Int {
         val message = chats[position]
 
-        if(message.sender == name){
+        if(message.senderMail == senderMail){
             if(position > 0){
                 val prevMessage = chats[position - 1]
 

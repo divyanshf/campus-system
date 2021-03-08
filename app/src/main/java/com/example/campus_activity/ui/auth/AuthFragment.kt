@@ -3,6 +3,7 @@ package com.example.campus_activity.ui.auth
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,21 +13,26 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.campus_activity.R
 import com.example.campus_activity.ui.main.MainActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AuthFragment : Fragment(), View.OnClickListener {
-    private var navController: NavController? = null
 
-    private lateinit var firebaseauth :FirebaseAuth
+    @Inject
+    lateinit var firebaseauth :FirebaseAuth
+
+    private var navController: NavController? = null
 
     @SuppressLint("ResourceAsColor")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_auth, container, false)
-        firebaseauth = FirebaseAuth.getInstance()
+
+        view.findViewById<FloatingActionButton>(R.id.skip_auth_button).setOnClickListener(this)
 
         return view
     }

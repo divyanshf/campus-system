@@ -1,30 +1,28 @@
 package com.example.campus_activity.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat.START
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
-import com.example.campus_activity.data.model.FeedModel
-import com.example.campus_activity.ui.adapter.FeedAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         //  Initialize values
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout = findViewById(R.id.drawer_layout)
         val toolbar: Toolbar = findViewById(R.id.my_toolbar)
         val bottomNavigation : BottomNavigationView = findViewById(R.id.bottom_navigation_bar)
 
@@ -56,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 
         //  Set action bar
         setSupportActionBar(toolbar)
-
     }
 
     //  Start a fragment
@@ -65,5 +62,14 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.fragment,fragment)
         transaction.commit()
     }
-    
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            android.R.id.home -> {
+                drawerLayout.openDrawer(START)
+                true
+            }
+            else -> false
+        }
+    }
 }

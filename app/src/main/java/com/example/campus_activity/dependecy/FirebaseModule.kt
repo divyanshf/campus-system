@@ -1,6 +1,7 @@
 package com.example.campus_activity.dependecy
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,12 @@ class FirebaseModule {
     @Provides
     fun provideFirebaseFirestore() : FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseDatabase() : FirebaseDatabase {
+        return FirebaseDatabase.getInstance()
     }
 
 }
