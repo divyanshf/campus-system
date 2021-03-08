@@ -10,10 +10,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.ActivityScoped
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 @ActivityScoped
 class ChatAdapter
@@ -98,6 +103,7 @@ constructor(
         return VIEW_TYPE_SENDER
     }
 
+    @ExperimentalTime
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val chat = chats[position]
         when(holder.itemViewType){
@@ -167,6 +173,7 @@ constructor(
         private var messageView:TextView = itemView.findViewById(R.id.message_text_view)
         private var timeView:TextView = itemView.findViewById(R.id.time_text_view)
 
+        @ExperimentalTime
         @SuppressLint("SetTextI18n")
         fun bind(currentChat:ChatModel){
             val name = currentChat.sender.split(" ", ",")[0]
@@ -175,33 +182,64 @@ constructor(
             messageView.text = currentChat.message
 
             val timestamp = currentChat.timestamp.toDate().toString()
-            val date = timestamp.substring(4, 10)
-            val year = timestamp.substring(timestamp.length - 4, timestamp.length)
-
             timeView.text = timestamp.substring(11, 16)
 
-            dateView.text = "$date, $year"
+            val day = getDay(currentChat.timestamp)
+
+            if(day == null){
+                val date = timestamp.substring(4, 10)
+                val year = timestamp.substring(timestamp.length - 4, timestamp.length)
+
+                dateView.text = "$date, $year"
+            }
+            else{
+                dateView.text = day
+            }
         }
     }
-
-
 
     inner class ReceiverDateChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
         private var dateView:TextView = itemView.findViewById(R.id.date_text_view)
         private var messageView:TextView = itemView.findViewById(R.id.message_text_view)
         private var timeView:TextView = itemView.findViewById(R.id.time_text_view)
 
+        @ExperimentalTime
         @SuppressLint("SetTextI18n")
         fun bind(currentChat:ChatModel){
             messageView.text = currentChat.message
 
             val timestamp = currentChat.timestamp.toDate().toString()
-            val date = timestamp.substring(4, 10)
-            val year = timestamp.substring(timestamp.length - 4, timestamp.length)
-
             timeView.text = timestamp.substring(11, 16)
 
-            dateView.text = "$date, $year"
+            val day = getDay(currentChat.timestamp)
+
+            if(day == null){
+                val date = timestamp.substring(4, 10)
+                val year = timestamp.substring(timestamp.length - 4, timestamp.length)
+
+                dateView.text = "$date, $year"
+            }
+            else{
+                dateView.text = day
+            }
+        }
+    }
+
+    @ExperimentalTime
+    private fun getDay(timestamp: Timestamp): String?{
+        val timeMS = timestamp.toDate().time.milliseconds.toLongMilliseconds()
+        val timeCalendar = Calendar.getInstance()
+        timeCalendar.timeInMillis = timeMS
+
+        val now = Calendar.getInstance().get(Calendar.DATE)
+        return when(timeCalendar.get(Calendar.DATE)){
+            now -> {
+                "Today"
+            }
+            (now - 1) -> {
+                "Yesterday"
+            }
+            else -> null
         }
     }
 
