@@ -159,7 +159,7 @@ class ChatActivity : AppCompatActivity() {
                 insertChat(newChat)
             }
             recyclerViewAdapter.setChats(chats)
-            recyclerView.scrollToPosition(recyclerView.bottom)
+            recyclerView.scrollToPosition(chats.size - 1)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -173,7 +173,7 @@ class ChatActivity : AppCompatActivity() {
             val newChat = convertToChat(newChatHash)
             insertChat(newChat)
             recyclerViewAdapter.addChat()
-            recyclerView.scrollToPosition(recyclerView.bottom)
+            recyclerView.scrollToPosition(chats.size - 1)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -198,7 +198,7 @@ class ChatActivity : AppCompatActivity() {
     //  Insert chat by model
     private fun insertChat(chat:ChatModel): ChatModel {
         chats.add(chat)
-        recyclerView.scrollToPosition(recyclerView.bottom)
+        recyclerView.scrollToPosition(chats.size - 1)
         return chat
     }
 
