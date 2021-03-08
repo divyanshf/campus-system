@@ -10,11 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
-import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ActivityContext
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
@@ -139,7 +136,9 @@ constructor(
 
         @SuppressLint("SetTextI18n")
         fun bind(currentChat:ChatModel){
-            senderView.text = currentChat.sender
+            val name = currentChat.sender.split(" ", ",")[0]
+
+            senderView.text = name
             messageView.text = currentChat.message
 
             val timestamp = currentChat.timestamp.toDate().toString()
@@ -170,7 +169,9 @@ constructor(
 
         @SuppressLint("SetTextI18n")
         fun bind(currentChat:ChatModel){
-            senderView.text = currentChat.sender
+            val name = currentChat.sender.split(" ", ",")[0]
+
+            senderView.text = name
             messageView.text = currentChat.message
 
             val timestamp = currentChat.timestamp.toDate().toString()
