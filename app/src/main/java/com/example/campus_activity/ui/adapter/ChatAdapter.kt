@@ -2,7 +2,6 @@ package com.example.campus_activity.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -185,16 +184,7 @@ constructor(
             timeView.text = timestamp.substring(11, 16)
 
             val day = getDay(currentChat.timestamp)
-
-            if(day == null){
-                val date = timestamp.substring(4, 10)
-                val year = timestamp.substring(timestamp.length - 4, timestamp.length)
-
-                dateView.text = "$date, $year"
-            }
-            else{
-                dateView.text = day
-            }
+            dateView.text = day
         }
     }
 
@@ -212,21 +202,12 @@ constructor(
             timeView.text = timestamp.substring(11, 16)
 
             val day = getDay(currentChat.timestamp)
-
-            if(day == null){
-                val date = timestamp.substring(4, 10)
-                val year = timestamp.substring(timestamp.length - 4, timestamp.length)
-
-                dateView.text = "$date, $year"
-            }
-            else{
-                dateView.text = day
-            }
+            dateView.text = day
         }
     }
 
     @ExperimentalTime
-    private fun getDay(timestamp: Timestamp): String?{
+    fun getDay(timestamp: Timestamp): String?{
         val timeMS = timestamp.toDate().time.milliseconds.toLongMilliseconds()
         val timeCalendar = Calendar.getInstance()
         timeCalendar.timeInMillis = timeMS
@@ -239,7 +220,12 @@ constructor(
             (now - 1) -> {
                 "Yesterday"
             }
-            else -> null
+            else -> {
+                val timestampString = timestamp.toDate().toString()
+                val date = timestampString.substring(4, 10)
+                val year = timestampString.substring(timestampString.length - 4, timestampString.length)
+                return "$date, $year"
+            }
         }
     }
 
