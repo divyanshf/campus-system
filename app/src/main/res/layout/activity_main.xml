@@ -32,24 +32,6 @@
                 android:layout_weight="1"
                 android:textSize="20sp"/>
 
-            <ImageView
-                android:id="@+id/add_new_feed"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_add_circle_outline_24"
-                android:layout_gravity="center"
-                android:padding="10dp"
-                android:contentDescription="add_new_feed"/>
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="20dp"
-                android:paddingHorizontal="10dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_baseline_subdirectory_arrow_right_24"
-                android:contentDescription="logout" />
-
         </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>
