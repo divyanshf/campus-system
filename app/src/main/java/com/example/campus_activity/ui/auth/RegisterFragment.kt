@@ -25,7 +25,7 @@ class RegisterFragment : Fragment() {
     private lateinit var editRoll: EditText
     private lateinit var editPassword: EditText
     private lateinit var editConPassword: EditText
-    private lateinit var editName : EditText
+    private lateinit var editName: EditText
     private lateinit var fireBaseAuth: FirebaseAuth
     private lateinit var btn: Button
 
@@ -45,6 +45,8 @@ class RegisterFragment : Fragment() {
         fireBaseAuth = FirebaseAuth.getInstance()
 
         btn = view.findViewById(R.id.register_button)
+
+
         btn.setOnClickListener {
             signUpUser()
         }
@@ -53,15 +55,29 @@ class RegisterFragment : Fragment() {
 
     //  Register user
     private fun signUpUser() {
-        val name : String = editName.text.toString()
-        val year :String = editYear.text.toString()
-        val batch :String = editBatch.text.toString()
-        val roll :String = editRoll.text.toString()
-        val email: String = rollToMail(year , batch , roll)
+        val name: String = editName.text.toString()
+        val year: String = editYear.text.toString()
+        val batch: String = editBatch.text.toString()
+        val roll: String = editRoll.text.toString()
+        val email: String = rollToMail(year, batch, roll)
         val password: String = editPassword.text.toString()
         val confirmPass: String = editConPassword.text.toString()
 
-        if (name.isBlank()||email.isBlank() || password.isBlank() || confirmPass.isBlank()) {
+        if (year.length != 4) {
+
+            Toast.makeText(activity, "Wrong format", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (batch.length!=3) {
+            Toast.makeText(activity, "Wrong format", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (roll.length != 3) {
+
+            Toast.makeText(activity, "Wrong format", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (name.isBlank() || email.isBlank() || password.isBlank() || confirmPass.isBlank()) {
             Toast.makeText(activity, "Blank Fields are not allowed", Toast.LENGTH_SHORT).show()
             return
         }
@@ -73,7 +89,8 @@ class RegisterFragment : Fragment() {
         fireBaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Toast.makeText(activity, "User is successfully created", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "User is successfully created", Toast.LENGTH_SHORT)
+                        .show()
 
                     //  Set the display name of the user
                     fireBaseAuth.currentUser?.updateProfile(
@@ -93,8 +110,9 @@ class RegisterFragment : Fragment() {
             }
     }
 
-    private fun rollToMail(y: String , b : String, r : String): String {
+    private fun rollToMail(y: String, b: String, r: String): String {
         return (b.toLowerCase(Locale.ROOT).plus("_").plus(y).plus(r).plus("@iiitm.ac.in"))
     }
+
 
 }

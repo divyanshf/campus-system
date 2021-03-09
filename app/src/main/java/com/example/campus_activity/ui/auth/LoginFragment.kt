@@ -54,6 +54,20 @@ class LoginFragment : Fragment() {
         val email: String = rollToMail(year , batch , roll)
         val password : String = txtPassword.text.toString()
 
+        if (year.length != 4) {
+
+            Toast.makeText(activity, "Wrong format", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (batch.length != 3) {
+            Toast.makeText(activity, "Wrong format", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (roll.length != 3) {
+
+            Toast.makeText(activity, "Wrong format", Toast.LENGTH_SHORT).show()
+            return
+        }
         if(email.isBlank()||password.isBlank())
         {
             Toast.makeText(activity,"Blank Fields are not allowed", Toast.LENGTH_SHORT).show()

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/maskgroup"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".ui.chat.newClub">
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lustria"
+
+        android:paddingLeft="20dp"
+        android:paddingTop="30dp"
+        android:text="Club"
+        android:textColor="@color/gray"
+        android:textSize="50dp"
+        tools:ignore="MissingConstraints">
+
+
+    </TextView>
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/comfortaa_light"
+
+        android:paddingLeft="20dp"
+        android:paddingTop="40dp"
+        android:text="Club Name"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        tools:ignore="MissingConstraints">
+
+
+    </TextView>
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+
+
+        android:textColorHint="@color/black"
+        app:boxCornerRadiusBottomStart="10dp"
+        app:boxCornerRadiusTopEnd="10dp"
+        app:boxStrokeColor="@color/black"
+
+        tools:ignore="MissingConstraints">
+
+        <com.google.android.material.textfield.TextInputEditText
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:textColor="@color/black" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/comfortaa_light"
+
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:text="Admin's Roll Number"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        tools:ignore="MissingConstraints">
+
+
+    </TextView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/name_edit_text_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+
+
+        android:orientation="horizontal"
+
+        app:boxCornerRadiusBottomStart="10dp"
+        app:boxCornerRadiusTopEnd="10dp"
+        app:boxStrokeColor="@color/black"
+        tools:ignore="MissingConstraints">
+
+        <com.google.android.material.textfield.TextInputEditText
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:textColor="@color/black" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password_edit_text_layout"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="190dp"
+        android:background="@drawable/button"
+        android:elevation="100dp"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="10dp"
+
+        android:text="Add"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        tools:ignore="MissingConstraints" />
+
+
+
+
+</LinearLayout>
