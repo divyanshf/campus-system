@@ -1,6 +1,8 @@
 package com.example.campus_activity.ui.main
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -39,6 +41,13 @@ class MainActivity : AppCompatActivity() {
 
         //  Set action bar
         setSupportActionBar(toolbar)
+
+        val addFeed : ImageView = findViewById(R.id.add_new_feed)
+
+        addFeed.setOnClickListener(){
+            val intent = Intent(this, AddFeed :: class.java)
+            startActivity(intent)
+        }
 
     }
 
