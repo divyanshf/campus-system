@@ -1,5 +1,6 @@
 package com.example.campus_activity.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +13,8 @@ import com.example.campus_activity.data.model.FeedModel
 import com.example.campus_activity.data.model.RoomModel
 import com.example.campus_activity.ui.adapter.FeedAdapter
 import com.example.campus_activity.ui.adapter.RoomAdapter
+import com.example.campus_activity.ui.chat.newClub
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.Timestamp
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -24,6 +27,7 @@ class RoomListFragment : Fragment() {
     lateinit var roomsAdapter: RoomAdapter
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var btnToClub : FloatingActionButton
     private var rooms:List<RoomModel> = ArrayList()
 
     override fun onCreateView(
@@ -33,6 +37,7 @@ class RoomListFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_room_list, container, false)
 
+        btnToClub= view.findViewById(R.id.fabToNewClub)
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.adapter = roomsAdapter
 
@@ -41,6 +46,17 @@ class RoomListFragment : Fragment() {
         //  Set up feeds
         rooms = generateDummyList(10)
         roomsAdapter.setFeed(rooms)
+
+
+        //Start newClub Activity
+
+        btnToClub.setOnClickListener{
+            val intent = Intent(activity, newClub::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
 
         return view
     }
