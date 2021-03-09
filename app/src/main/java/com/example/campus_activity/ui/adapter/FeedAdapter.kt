@@ -49,6 +49,11 @@ constructor(
 
     fun setFeed(feedModel: List<FeedModel>){
         feeds = feedModel
+        notifyDataSetChanged()
+    }
+
+    fun addFeed(position: Int){
+        notifyItemInserted(position)
     }
 
     // Return the size
