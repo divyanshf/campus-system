@@ -60,6 +60,7 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/club_Name"
             android:inputType="textPersonName"
             android:textColor="@color/black" />
 
@@ -102,16 +103,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
+            android:id="@+id/admin_Roll"
             android:textColor="@color/black" />
 
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/add_New_Club"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/password_edit_text_layout"
         android:layout_alignParentEnd="true"
         android:layout_gravity="center"
         android:layout_marginTop="190dp"
@@ -124,7 +125,7 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="20sp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="InvalidId,MissingConstraints" />
 
 
 
