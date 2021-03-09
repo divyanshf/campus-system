@@ -27,5 +27,16 @@
         It has roots in a piece of classical Latin
         literature from 45 BC, making it over 2000 years old.
     </string>
+
+    <!--added testing strings for add feeds activity-->
     <string name="welcome">Welcome!</string>
+    <string name="upload">UPLOAD</string>
+    <string name="new_feed">New Feed</string>
+    <string name="add_feed_from">from</string>
+
+    <array name="clubs">
+        <item>AASF</item>
+        <item>UTHAAN</item>
+        <item>ROTARACT</item>
+    </array>
 </resources>

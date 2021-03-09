@@ -12,6 +12,8 @@
         android:roundIcon="@drawable/iiitm"
         android:supportsRtl="true"
         android:theme="@style/Theme.Campus">
+        <activity android:name=".ui.main.AddFeed">
+        </activity>
         <activity android:name=".ui.chat.ChatActivity"></activity>
         <activity android:name=".ui.main.MainActivity">
             <intent-filter>
