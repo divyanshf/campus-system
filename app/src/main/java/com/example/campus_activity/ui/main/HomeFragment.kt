@@ -7,10 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.FeedModel
+import com.example.campus_activity.data.repository.FeedsRepository
 import com.example.campus_activity.ui.adapter.FeedAdapter
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
@@ -27,13 +30,15 @@ class HomeFragment : Fragment() {
     lateinit var feedsAdapter: FeedAdapter
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
+    @Inject
+    lateinit var repository: FeedsRepository
 
     private lateinit var feedsRecyclerView: RecyclerView
     private lateinit var addFeedCard : MaterialCardView
     private lateinit var newFeed: TextInputEditText
     private lateinit var spinner: Spinner
     private lateinit var uploadButton:Button
-    private var feeds:ArrayList<FeedModel> = ArrayList()
+    private lateinit var feeds:LiveData<List<FeedModel>>
 
     //  Variable to check if the user is permitted to add feed
     private val canAddFeed = true
@@ -49,6 +54,7 @@ class HomeFragment : Fragment() {
         newFeed = view.findViewById(R.id.new_feed_text_view)
         spinner = view.findViewById(R.id.list_club_spinner)
         uploadButton  = view.findViewById(R.id.add_feed_button)
+        feeds  = repository.allFeeds.asLiveData()
 
         setUpAddFeed()
 
@@ -58,10 +64,20 @@ class HomeFragment : Fragment() {
         feedsRecyclerView.layoutManager = LinearLayoutManager(context)
 
         //  Set up feeds
-//        feeds = generateDummyList(10)
-        feedsAdapter.setFeed(feeds)
+        loadFeeds()
 
         return view
+    }
+
+    //  Load feeds
+    private fun loadFeeds(){
+        repository.getAllFeeds()
+        Log.i("Load", "One")
+        feeds.observe(viewLifecycleOwner, {
+            Log.i("Load", "Two")
+            feedsAdapter.setFeed(it)
+            Log.i("Load", "$it")
+        })
     }
 
     private fun setUpAddFeed(){
@@ -99,21 +115,11 @@ class HomeFragment : Fragment() {
         }
     }
 
+    //  Add a new feed
     private fun addFeed(feedText:String, roomName:String){
         val user = firebaseAuth.currentUser
         val feed = FeedModel("0", roomName, user?.displayName!!, feedText, Timestamp.now())
-        feeds.add(feed)
-        feedsAdapter.setFeed(feeds)
-        Log.i("Feeds", feeds.toString())
+        repository.insertFeed(feed)
+        loadFeeds()
     }
-
-//    private fun generateDummyList(size: Int): List<FeedModel> {
-//        val list = ArrayList<FeedModel>()
-//        val text = "Contrary to popular belief Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old."
-//        for (i in 0 until size) {
-//            val item = FeedModel("XXXYYYY", "Abhigyan Abhikaushalam Students Forum", "Posted by Yuvaan", text, Timestamp.now())
-//            list += item
-//        }
-//        return list
-//    }
 }
