@@ -118,7 +118,7 @@ class HomeFragment : Fragment() {
     //  Add a new feed
     private fun addFeed(feedText:String, roomName:String){
         val user = firebaseAuth.currentUser
-        val feed = FeedModel("0", roomName, user?.displayName!!, feedText, Timestamp.now())
+        val feed = FeedModel(roomName, user?.displayName!!, feedText, Timestamp.now())
         repository.insertFeed(feed)
         loadFeeds()
     }
