@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class FeedsRepository(
+class FeedsRepository
+    constructor(
     val firebaseFirestore: FirebaseFirestore
 ) {
     val allFeeds: MutableStateFlow<List<FeedModel>> = MutableStateFlow(ArrayList())

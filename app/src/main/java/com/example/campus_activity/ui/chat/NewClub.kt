@@ -1,24 +1,22 @@
 package com.example.campus_activity.ui.chat
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.widget.doOnTextChanged
+import androidx.appcompat.app.AppCompatActivity
 import com.example.campus_activity.R
-import com.example.campus_activity.ui.main.MainActivity
-import com.example.campus_activity.ui.main.RoomListFragment
+import com.example.campus_activity.data.repository.RoomsRepository
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class newClub : AppCompatActivity() {
+class NewClub : AppCompatActivity() {
+
+    @Inject
+    lateinit var roomsRepository: RoomsRepository
 
     lateinit var clubEdt: EditText
     lateinit var adminEdt: EditText
@@ -34,7 +32,6 @@ class newClub : AppCompatActivity() {
 
         db = FirebaseFirestore.getInstance().collection("rooms")
 
-
         clubEdt = findViewById(R.id.club_Name)
         editYear = findViewById(R.id.year_nclub_edit_text)
         editBatch =findViewById(R.id.batch_nclub_edit_text)
@@ -45,7 +42,6 @@ class newClub : AppCompatActivity() {
             adding()
         }
 
-
     }
 
     private fun adding() {
@@ -55,35 +51,23 @@ class newClub : AppCompatActivity() {
         val batch :String = editBatch.text.toString()
         val roll :String = editRoll.text.toString()
 
-        val adminArrayList = ArrayList<String>(1)
-        adminArrayList.add(rollToMail(year,batch,roll))
+        val admin = rollToMail(year,batch,roll)
 
         val memberArrayList = ArrayList<String>(3)
         memberArrayList.add("bcs_2019009@iiitm.ac.in")
         memberArrayList.add("bcs_2019021@iiitm.ac.in")
         memberArrayList.add("bcs_2019109@iiitm.ac.in")
 
-        if (!clubText.isEmpty() && !rollToMail(year,batch,roll).isEmpty()) {
+        if (clubText.isNotEmpty() && rollToMail(year,batch,roll).isNotEmpty()) {
             try {
-                val members = hashMapOf<String, ArrayList<String>>()
-                members.put("admin", adminArrayList)
-                members.put("members", memberArrayList)
-                db.document(clubText).set(members).addOnSuccessListener { void: Void? ->
-                    Toast.makeText(
-                        this,
-                        "Successfully uploaded to the database ",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }.addOnFailureListener { exception: java.lang.Exception ->
-                    Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
-                 }
+                roomsRepository.insertRoom(clubText, admin, memberArrayList)
+                Toast.makeText(this, "New club added", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
             }
         } else {
             Toast.makeText(this, "Please fill up the fields ", Toast.LENGTH_LONG).show()
         }
-
 
     }
 

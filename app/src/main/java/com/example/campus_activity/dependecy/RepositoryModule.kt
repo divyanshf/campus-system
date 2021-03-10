@@ -1,6 +1,7 @@
 package com.example.campus_activity.dependecy
 
 import com.example.campus_activity.data.repository.FeedsRepository
+import com.example.campus_activity.data.repository.RoomsRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -15,7 +16,13 @@ class RepositoryModule {
     @Singleton
     @Provides
     fun provideFeedsRepository(firebaseFirestore: FirebaseFirestore):FeedsRepository{
-        return FeedsRepository((firebaseFirestore))
+        return FeedsRepository(firebaseFirestore)
+    }
+
+    @Singleton
+    @Provides
+    fun provideRoomsRepository(firebaseFirestore: FirebaseFirestore):RoomsRepository{
+        return RoomsRepository(firebaseFirestore)
     }
 
 }
