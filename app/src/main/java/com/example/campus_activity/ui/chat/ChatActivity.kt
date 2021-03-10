@@ -1,8 +1,11 @@
 package com.example.campus_activity.ui.chat
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -18,6 +21,7 @@ import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.ui.adapter.ChatAdapter
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
@@ -26,6 +30,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
@@ -44,7 +49,7 @@ class ChatActivity : AppCompatActivity() {
     private val chatsReference = fireDatabase.getReference("chats")
     private var testEndPoint = chatsReference.child("test")
     private var roomName = "test01"
-    private var isAdmin = false
+    private var isAdmin = true
 
     //  Hilt variables
     @Inject
@@ -239,6 +244,13 @@ class ChatActivity : AppCompatActivity() {
         testEndPoint.child("$chatsCount").setValue(newChat)
     }
 
+    //  Add new member to club
+    private fun addNewMember(email:String){
+        firebaseFirestore.collection("rooms")
+            .document(roomName)
+            .update("members", FieldValue.arrayUnion(email))
+    }
+
     //  Options create
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_chat_activity, menu)
@@ -254,6 +266,33 @@ class ChatActivity : AppCompatActivity() {
                 true
             }
             R.id.add_member -> {
+                val dialogBuilder = MaterialAlertDialogBuilder(this)
+
+                val view = this.layoutInflater.inflate(R.layout.dialog_add_member, null)
+                dialogBuilder.setView(view)
+
+                val year: TextInputEditText = view.findViewById(R.id.year_edit_text)
+                val batch: TextInputEditText = view.findViewById(R.id.batch_edit_text)
+                val roll: TextInputEditText = view.findViewById(R.id.roll_edit_text)
+
+                dialogBuilder
+                    .setTitle("Add Member")
+                    .setPositiveButton("Add") { _: DialogInterface, _: Int ->
+                        val yText = year.text.toString()
+                        val bText = batch.text.toString()
+                        val rText = roll.text.toString()
+                        if (yText.length == 4 && bText.length == 3 && rText.length == 3) {
+                            val rollNumber = (bText.toLowerCase(Locale.ROOT).plus("_").plus(yText).plus(rText).plus("@iiitm.ac.in"))
+                            addNewMember(rollNumber)
+                        } else {
+                            Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+
+                val dialog = dialogBuilder.create()
+                dialog.show()
+
                 true
             }
             else -> false
