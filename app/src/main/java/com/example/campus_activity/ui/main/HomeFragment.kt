@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.FeedModel
 import com.example.campus_activity.data.repository.FeedsRepository
@@ -20,7 +21,9 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -33,6 +36,7 @@ class HomeFragment : Fragment() {
     @Inject
     lateinit var repository: FeedsRepository
 
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var feedsRecyclerView: RecyclerView
     private lateinit var addFeedCard : MaterialCardView
     private lateinit var newFeed: TextInputEditText
@@ -50,6 +54,7 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         addFeedCard = view.findViewById(R.id.add_feed_card)
         newFeed = view.findViewById(R.id.new_feed_text_view)
         spinner = view.findViewById(R.id.list_club_spinner)
@@ -65,6 +70,12 @@ class HomeFragment : Fragment() {
 
         //  Set up feeds
         loadFeeds()
+        swipeRefreshLayout.setOnRefreshListener {
+            loadFeeds()
+            Timer("Refresh", false).schedule(500){
+                swipeRefreshLayout.isRefreshing = false
+            }
+        }
 
         return view
     }

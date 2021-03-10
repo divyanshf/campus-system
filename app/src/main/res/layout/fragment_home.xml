@@ -5,65 +5,72 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.HomeFragment">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/add_feed_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:padding="10dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp">
-
-                    <Spinner
-                        android:id="@+id/list_club_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:padding="20dp"/>
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/new_feed_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxHeight="300dp"
-                        android:layout_margin="10dp"
-                        android:padding="20dp"
-                        android:hint="@string/new_feed"
-                        android:inputType="textMultiLine"
-                        android:layout_below="@id/list_club_spinner"/>
-
-                    <Button
-                        android:id="@+id/add_feed_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/upload"
-                        android:layout_below="@id/new_feed_text_view"/>
-
-                </RelativeLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/feeds_recycler_view"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/gray_light"
-                tools:listitem="@layout/card_feed"/>
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/add_feed_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:padding="10dp">
 
-    </androidx.core.widget.NestedScrollView>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
+                        <Spinner
+                            android:id="@+id/list_club_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:padding="20dp"/>
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/new_feed_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxHeight="300dp"
+                            android:layout_margin="10dp"
+                            android:padding="20dp"
+                            android:hint="@string/new_feed"
+                            android:inputType="textMultiLine"
+                            android:layout_below="@id/list_club_spinner"/>
+
+                        <Button
+                            android:id="@+id/add_feed_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/upload"
+                            android:layout_below="@id/new_feed_text_view"/>
+
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/feeds_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/gray_light"
+                    tools:listitem="@layout/card_feed"/>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
