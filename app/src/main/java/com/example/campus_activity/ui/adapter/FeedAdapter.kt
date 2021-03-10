@@ -37,7 +37,7 @@ constructor(
         val currentItem = feeds[position]
 
         viewHolder.senderTextView.text = currentItem.sender_name
-        viewHolder.posterByTextView.text = currentItem.posted_by
+        viewHolder.posterByTextView.text = "Posted by ${currentItem.posted_by}"
         viewHolder.postTextView.text = currentItem.post
 
         val timestamp = currentItem.timestamp.toDate().toString()

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,86 +7,70 @@
     android:background="@drawable/maskgroup"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".ui.chat.newClub">
+    tools:context=".ui.chat.NewClub">
 
     <TextView
-
+        android:id="@+id/title_new_club"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/lustria"
-
-        android:paddingLeft="20dp"
-        android:paddingTop="30dp"
+        android:paddingStart="20dp"
+        android:layout_marginTop="30dp"
         android:text="Club"
-        android:textColor="@color/gray"
-        android:textSize="50dp"
-        tools:ignore="MissingConstraints">
-
-
-    </TextView>
+        android:layout_alignParentTop="true"
+        android:textColor="@color/white"
+        android:textSize="50sp"/>
 
     <TextView
-
+        android:id="@+id/club_name_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/comfortaa_light"
-
         android:paddingLeft="20dp"
         android:paddingTop="40dp"
         android:text="Club Name"
+        android:layout_below="@id/title_new_club"
         android:textColor="@color/black"
-        android:textSize="20dp"
-        tools:ignore="MissingConstraints">
-
-
-    </TextView>
+        android:textSize="20dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
-
+        android:id="@+id/club_name_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-
-
         android:textColorHint="@color/black"
         app:boxCornerRadiusBottomStart="10dp"
+        android:layout_below="@id/club_name_heading"
         app:boxCornerRadiusTopEnd="10dp"
-        app:boxStrokeColor="@color/black"
-
-        tools:ignore="MissingConstraints">
+        app:boxStrokeColor="@color/black">
 
         <com.google.android.material.textfield.TextInputEditText
-
             android:id="@+id/club_Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:textColor="@color/black" />
 
-
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-
+        android:id="@+id/admin_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/comfortaa_light"
-
         android:paddingLeft="20dp"
         android:paddingTop="20dp"
+        android:layout_below="@id/club_name_layout"
         android:text="Admin's Roll Number"
         android:textColor="@color/black"
-        android:textSize="20dp"
-        tools:ignore="MissingConstraints">
-
-
-    </TextView>
-
+        android:textSize="20dp"/>
 
     <FrameLayout
+        android:id="@+id/admin_name_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/admin_heading"
         android:layout_marginTop="20dp">
 
         <LinearLayout
@@ -100,11 +84,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/register_title"
-
                 android:layout_gravity="right"
                 android:layout_weight="1"
-
                 android:hint="Year"
                 android:padding="2dp"
                 android:textColorHint="@color/black"
@@ -128,11 +109,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:layout_below="@id/register_title"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-
                 android:hint="Batch"
                 android:padding="2dp"
                 android:textColorHint="@color/black"
@@ -141,7 +119,6 @@
                 app:boxStrokeColor="@color/black"
                 app:hintTextColor="@color/black"
                 app:placeholderText="XXX"
-
                 app:placeholderTextColor="@color/red">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -157,18 +134,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:layout_below="@id/register_title"
                 android:layout_gravity="left"
                 android:layout_weight="1"
                 android:gravity="left"
                 android:hint="Roll No."
-
                 android:padding="2dp"
                 android:textColorHint="@color/black"
                 app:boxCornerRadiusBottomStart="10dp"
-
-
                 app:boxCornerRadiusTopEnd="10dp"
                 app:boxStrokeColor="@color/black"
                 app:hintTextColor="@color/black"
@@ -190,14 +162,14 @@
         android:id="@+id/add_New_Club"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_gravity="center"
         android:layout_marginTop="190dp"
         android:background="@drawable/button"
         android:elevation="100dp"
         android:paddingHorizontal="50dp"
         android:paddingVertical="10dp"
-
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:text="Add"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -205,4 +177,4 @@
         tools:ignore="InvalidId,MissingConstraints" />
 
 
-</LinearLayout>
+</RelativeLayout>
