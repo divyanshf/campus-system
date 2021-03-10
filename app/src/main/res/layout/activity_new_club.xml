@@ -58,10 +58,10 @@
 
         <com.google.android.material.textfield.TextInputEditText
 
+            android:id="@+id/club_Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/club_Name"
-            android:inputType="textPersonName"
+            android:inputType="text"
             android:textColor="@color/black" />
 
 
@@ -83,31 +83,108 @@
 
     </TextView>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/name_edit_text_layout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp">
 
-
-        android:orientation="horizontal"
-
-        app:boxCornerRadiusBottomStart="10dp"
-        app:boxCornerRadiusTopEnd="10dp"
-        app:boxStrokeColor="@color/black"
-        tools:ignore="MissingConstraints">
-
-        <com.google.android.material.textfield.TextInputEditText
-
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:id="@+id/admin_Roll"
-            android:textColor="@color/black" />
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/year_nclub_edit_text_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/register_title"
+
+                android:layout_gravity="right"
+                android:layout_weight="1"
+
+                android:hint="Year"
+                android:padding="2dp"
+                android:textColorHint="@color/black"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxStrokeColor="@color/black"
+                app:hintTextColor="@color/black"
+                app:placeholderText="20XX"
+                app:placeholderTextColor="@color/red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/year_nclub_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/batch_nclub_edit_text_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@id/register_title"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+
+                android:hint="Batch"
+                android:padding="2dp"
+                android:textColorHint="@color/black"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxStrokeColor="@color/black"
+                app:hintTextColor="@color/black"
+                app:placeholderText="XXX"
+
+                app:placeholderTextColor="@color/red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/batch_nclub_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/roll_nclub_edit_text_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@id/register_title"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:hint="Roll No."
+
+                android:padding="2dp"
+                android:textColorHint="@color/black"
+                app:boxCornerRadiusBottomStart="10dp"
 
 
-    </com.google.android.material.textfield.TextInputLayout>
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxStrokeColor="@color/black"
+                app:hintTextColor="@color/black"
+                app:placeholderText="XXX"
+                app:placeholderTextColor="@color/red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/roll_nclub_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </FrameLayout>
+
 
     <Button
         android:id="@+id/add_New_Club"
@@ -126,8 +203,6 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         tools:ignore="InvalidId,MissingConstraints" />
-
-
 
 
 </LinearLayout>
