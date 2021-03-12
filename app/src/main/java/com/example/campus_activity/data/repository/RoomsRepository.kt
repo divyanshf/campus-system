@@ -18,10 +18,11 @@ constructor(
     var allRooms:MutableStateFlow<List<RoomModel>> = MutableStateFlow(ArrayList())
 
     fun insertRoom(roomName:String, admin:String, members:ArrayList<String>){
-        val members = hashMapOf<String, Any>()
-        members["admin"] = admin
-        members["members"] = members
-        members["name"] = roomName
+        val members = hashMapOf(
+            "admin" to admin,
+            "members" to members,
+            "name" to roomName
+        )
         firebaseFirestore.collection("rooms")
             .add(members)
     }
