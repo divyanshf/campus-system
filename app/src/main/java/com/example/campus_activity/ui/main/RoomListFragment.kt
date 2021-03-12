@@ -80,7 +80,7 @@ class RoomListFragment : Fragment() {
 
     private fun checkAdmin(){
         val email = user?.email!!.toString()
-        if(email.substring(0, 3) == "ADM" && email.substring(4, 8) == "0000"){
+        if(email.substring(0, 3) == "adm" && email.substring(4, 8) == "0000"){
             isAdmin = true
         }
     }
