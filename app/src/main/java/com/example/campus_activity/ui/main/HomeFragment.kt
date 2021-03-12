@@ -101,9 +101,9 @@ class HomeFragment : Fragment() {
         rooms.observe(viewLifecycleOwner, {
             val testClubs = ArrayList<String>()
             it.map { r ->
-                if(user?.email.toString() == r.admin || r.members.binarySearch(user?.email.toString(), 0, r.members.size - 1) >= 0){
+                if(user?.email.toString() == r.admin || r.members?.binarySearch(user?.email.toString(), 0, r.members?.size!! - 1)!! >= 0){
                     Log.i("Reached", user?.email.toString())
-                    testClubs.add(r.name.toUpperCase(Locale.ROOT))
+                    testClubs.add(r.name?.toUpperCase(Locale.ROOT)!!)
                 }
             }
 

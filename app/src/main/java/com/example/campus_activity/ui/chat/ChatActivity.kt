@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
+import com.example.campus_activity.data.model.RoomModel
 import com.example.campus_activity.ui.adapter.ChatAdapter
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -49,7 +50,7 @@ class ChatActivity : AppCompatActivity() {
     private val chatsReference = fireDatabase.getReference("chats")
     private var testEndPoint = chatsReference.child("test")
     private var roomName = "test01"
-    private var isAdmin = true
+    private var isAdmin = false
 
     //  Hilt variables
     @Inject
@@ -78,9 +79,13 @@ class ChatActivity : AppCompatActivity() {
 
         //  Add endpoint
         try {
-            roomName = intent.getStringExtra("roomName")!!
-            isAdmin = intent.getBooleanExtra("isClubAdmin", false)
-            testEndPoint = chatsReference.child(intent.getStringExtra("roomName")!!)
+            val user = firebaseAuth.currentUser
+            val room = intent.getParcelableExtra<RoomModel>("room")
+            roomName = room?.name!!
+            if(room.admin == user?.email.toString()){
+                isAdmin = true
+            }
+            testEndPoint = chatsReference.child(roomName)
         }catch (e:Exception){
             Toast.makeText(this, "Unidentified room!", Toast.LENGTH_SHORT).show()
         }

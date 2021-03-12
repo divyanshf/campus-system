@@ -12,6 +12,7 @@ import com.example.campus_activity.R
 import com.example.campus_activity.data.model.FeedModel
 import com.example.campus_activity.data.model.RoomModel
 import com.example.campus_activity.ui.chat.ChatActivity
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
@@ -21,10 +22,12 @@ class RoomAdapter
 @Inject
 constructor(
     @ActivityContext
-    context: Context
+    context: Context,
+    firebaseAuth: FirebaseAuth
 ) : RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
     private val mInflater = LayoutInflater.from(context)
     private var rooms:List<RoomModel> = ArrayList()
+    private val user = firebaseAuth.currentUser
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -43,7 +46,7 @@ constructor(
         viewHolder.roomTextView.text = currentItem.name
         viewHolder.lastMessage.text = currentItem.lastMessage
 
-        val timestamp = currentItem.timestamp.toDate().toString()
+        val timestamp = currentItem.timestamp?.toDate().toString()
 
         viewHolder.timeTextView.text = timestamp.substring(11, 16)
     }
@@ -66,6 +69,7 @@ constructor(
 
         override fun onClick(v: View?) {
             val intent = Intent(v?.context, ChatActivity::class.java)
+            intent.putExtra("room", rooms[adapterPosition])
             v?.context?.startActivity(intent)
         }
     }
