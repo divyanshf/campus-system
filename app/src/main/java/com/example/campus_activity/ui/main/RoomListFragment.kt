@@ -18,6 +18,8 @@ import com.example.campus_activity.ui.adapter.RoomAdapter
 import com.example.campus_activity.ui.chat.NewClub
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,17 +30,20 @@ class RoomListFragment : Fragment() {
 
     //  Hilt variables
     @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+    @Inject
     lateinit var roomsAdapter: RoomAdapter
     @Inject
     lateinit var roomsRepository: RoomsRepository
 
+    private var user: FirebaseUser? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var btnToClub : FloatingActionButton
     private var rooms:List<RoomModel> = ArrayList()
     private lateinit var allRooms:LiveData<List<RoomModel>>
 
     //  Is the user college admin
-    private val isAdmin = true
+    private var isAdmin = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +51,9 @@ class RoomListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_room_list, container, false)
+
+        user = firebaseAuth.currentUser
+        checkAdmin()
 
         btnToClub= view.findViewById(R.id.fabToNewClub)
         allRooms = roomsRepository.allRooms.asLiveData()
@@ -70,6 +78,13 @@ class RoomListFragment : Fragment() {
         return view
     }
 
+    private fun checkAdmin(){
+        val email = user?.email!!.toString()
+        if(email.substring(0, 3) == "ADM" && email.substring(4, 8) == "0000"){
+            isAdmin = true
+        }
+    }
+
     override fun onResume() {
         fetchingData()
         super.onResume()
@@ -79,8 +94,21 @@ class RoomListFragment : Fragment() {
     {
         roomsRepository.getAllRooms()
         allRooms.observe(viewLifecycleOwner, {
-            rooms = it
-            roomsAdapter.setFeed(it)
+            if(isAdmin){
+                rooms = it
+                roomsAdapter.setFeed(it)
+            }
+            else{
+                val email = user?.email!!.toString()
+                val tempRooms = ArrayList<RoomModel>()
+                it.map { r ->
+                    if(r.admin == email || r.members?.binarySearch(email, 0, r.members!!.size - 1)!! >= 0){
+                        tempRooms.add(r)
+                    }
+                }
+                rooms = tempRooms
+                roomsAdapter.setFeed(tempRooms)
+            }
         })
     }
 }

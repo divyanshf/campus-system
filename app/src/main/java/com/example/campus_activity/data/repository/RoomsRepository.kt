@@ -1,11 +1,9 @@
 package com.example.campus_activity.data.repository
 
-import com.example.campus_activity.data.model.FeedModel
 import com.example.campus_activity.data.model.RoomModel
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,6 +51,8 @@ constructor(
         return RoomModel(
             snap.id,
             snap["name"] as String,
+            snap["admin"] as String,
+            snap["members"] as ArrayList<String>,
             "Some random last message",
             Timestamp.now()
         )
