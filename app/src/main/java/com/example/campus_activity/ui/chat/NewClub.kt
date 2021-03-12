@@ -51,17 +51,12 @@ class NewClub : AppCompatActivity() {
 
         val admin = rollToMail(year,batch,roll)
 
-        val memberArrayList = ArrayList<String>(3)
-        memberArrayList.add("bcs_2019009@iiitm.ac.in")
-        memberArrayList.add("bcs_2019021@iiitm.ac.in")
-        memberArrayList.add("bcs_2019109@iiitm.ac.in")
+        val memberArrayList = ArrayList<String>()
 
         if (clubText.isNotEmpty() && rollToMail(year,batch,roll).isNotEmpty()) {
             try {
-                roomsRepository.insertRoom(clubText, admin, memberArrayList)
-                Log.i("Rooms", "here")
+                roomsRepository.insertRoom(clubText.toUpperCase(Locale.ROOT), admin, memberArrayList)
                 finish()
-                Log.i("Rooms", "here")
                 Toast.makeText(this, "New club added", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 e.printStackTrace()
