@@ -1,18 +1,19 @@
 package com.example.campus_activity.ui.chat
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campus_activity.R
 import com.example.campus_activity.data.repository.RoomsRepository
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+@AndroidEntryPoint
 class NewClub : AppCompatActivity() {
 
     @Inject
@@ -24,13 +25,10 @@ class NewClub : AppCompatActivity() {
     private lateinit var editYear: EditText
     private lateinit var editBatch: EditText
     private lateinit var editRoll: EditText
-    lateinit var db: CollectionReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_club)
-
-        db = FirebaseFirestore.getInstance().collection("rooms")
 
         clubEdt = findViewById(R.id.club_Name)
         editYear = findViewById(R.id.year_nclub_edit_text)
@@ -61,9 +59,12 @@ class NewClub : AppCompatActivity() {
         if (clubText.isNotEmpty() && rollToMail(year,batch,roll).isNotEmpty()) {
             try {
                 roomsRepository.insertRoom(clubText, admin, memberArrayList)
+                Log.i("Rooms", "here")
+                finish()
+                Log.i("Rooms", "here")
                 Toast.makeText(this, "New club added", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
+                e.printStackTrace()
             }
         } else {
             Toast.makeText(this, "Please fill up the fields ", Toast.LENGTH_LONG).show()
@@ -74,7 +75,6 @@ class NewClub : AppCompatActivity() {
     private fun rollToMail(y: String , b : String, r : String): String {
         return (b.toLowerCase(Locale.ROOT).plus("_").plus(y).plus(r).plus("@iiitm.ac.in"))
     }
-
 
 }
 
