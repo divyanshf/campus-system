@@ -50,6 +50,7 @@ class ChatActivity : AppCompatActivity() {
     private val chatsReference = fireDatabase.getReference("chats")
     private var testEndPoint = chatsReference.child("test")
     private var roomName = "test01"
+    private var room:RoomModel? = null
     private var isAdmin = false
 
     //  Hilt variables
@@ -80,9 +81,9 @@ class ChatActivity : AppCompatActivity() {
         //  Add endpoint
         try {
             val user = firebaseAuth.currentUser
-            val room = intent.getParcelableExtra<RoomModel>("room")
+            room = intent.getParcelableExtra<RoomModel>("room")
             roomName = room?.name!!
-            if(room.admin == user?.email.toString()){
+            if(room?.admin == user?.email.toString()){
                 isAdmin = true
             }
             testEndPoint = chatsReference.child(roomName)
@@ -252,8 +253,11 @@ class ChatActivity : AppCompatActivity() {
     //  Add new member to club
     private fun addNewMember(email:String){
         firebaseFirestore.collection("rooms")
-            .document(roomName)
+            .document(room?.id!!)
             .update("members", FieldValue.arrayUnion(email))
+            .addOnCompleteListener {
+                Toast.makeText(this, "Member added", Toast.LENGTH_SHORT).show()
+            }
     }
 
     //  Options create

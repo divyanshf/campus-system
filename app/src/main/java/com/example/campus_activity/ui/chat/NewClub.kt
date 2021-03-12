@@ -58,7 +58,7 @@ class NewClub : AppCompatActivity() {
 
         if (clubText.isNotEmpty() && rollToMail(year,batch,roll).isNotEmpty()) {
             try {
-                roomsRepository.insertRoom(clubText, admin, memberArrayList)
+                roomsRepository.insertRoom(clubText.toUpperCase(Locale.ROOT), admin, memberArrayList)
                 Log.i("Rooms", "here")
                 finish()
                 Log.i("Rooms", "here")
