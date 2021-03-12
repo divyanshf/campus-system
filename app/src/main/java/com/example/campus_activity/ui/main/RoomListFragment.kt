@@ -102,7 +102,10 @@ class RoomListFragment : Fragment() {
                 val email = user?.email!!.toString()
                 val tempRooms = ArrayList<RoomModel>()
                 it.map { r ->
-                    if(r.admin == email || r.members?.binarySearch(email, 0, r.members!!.size - 1)!! >= 0){
+                    val checkString = r.members?.find {s ->
+                        s == user?.email
+                    }
+                    if(r.admin == email || checkString == user?.email){
                         tempRooms.add(r)
                     }
                 }
