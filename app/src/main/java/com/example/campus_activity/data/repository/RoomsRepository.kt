@@ -53,6 +53,8 @@ constructor(
         return RoomModel(
             snap.id,
             snap["name"] as String,
+            snap["admin"] as String,
+            snap["members"] as List<String>,
             "Some random last message",
             Timestamp.now()
         )
