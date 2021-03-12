@@ -50,9 +50,6 @@ class HomeFragment : Fragment() {
     private lateinit var feeds:LiveData<List<FeedModel>>
     private lateinit var rooms:LiveData<List<RoomModel>>
 
-    //  Variable to check if the user is permitted to add feed
-    private val canAddFeed = true
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -101,8 +98,10 @@ class HomeFragment : Fragment() {
         rooms.observe(viewLifecycleOwner, {
             val testClubs = ArrayList<String>()
             it.map { r ->
-                if(user?.email.toString() == r.admin || r.members?.binarySearch(user?.email.toString(), 0, r.members?.size!! - 1)!! >= 0){
-                    Log.i("Reached", user?.email.toString())
+                val checkString = r.members?.find {s ->
+                    s == user?.email
+                }
+                if(user?.email.toString() == r.admin || checkString == user?.email){
                     testClubs.add(r.name?.toUpperCase(Locale.ROOT)!!)
                 }
             }
