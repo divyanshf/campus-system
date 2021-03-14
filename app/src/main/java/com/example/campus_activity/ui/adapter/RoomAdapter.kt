@@ -44,11 +44,11 @@ constructor(
         val currentItem = rooms[position]
 
         viewHolder.roomTextView.text = currentItem.name
-        viewHolder.lastMessage.text = currentItem.lastMessage
+//        viewHolder.lastMessage.text = currentItem.lastMessage
 
-        val timestamp = currentItem.timestamp?.toDate().toString()
+//        val timestamp = currentItem.timestamp?.toDate().toString()
 
-        viewHolder.timeTextView.text = timestamp.substring(11, 16)
+//        viewHolder.timeTextView.text = timestamp.substring(11, 16)
     }
 
     fun setFeed(roomModels: List<RoomModel>){
@@ -60,8 +60,8 @@ constructor(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         val roomTextView : TextView = view.findViewById(R.id.room_name_text_view)
-        val lastMessage : TextView = view.findViewById(R.id.last_msg_text_view)
-        val timeTextView : TextView = view.findViewById(R.id.time_text_view)
+//        val lastMessage : TextView = view.findViewById(R.id.last_msg_text_view)
+//        val timeTextView : TextView = view.findViewById(R.id.time_text_view)
 
         init {
             view.setOnClickListener(this)
