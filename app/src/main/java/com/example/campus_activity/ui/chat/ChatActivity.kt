@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -133,9 +134,11 @@ class ChatActivity : AppCompatActivity() {
         chatsViewModel.allChats.observe(this, {
             when(it){
                 Result.Progress -> {
+                    Log.i("UI", "progress")
                     progressBar.visibility = View.VISIBLE
                 }
                 is Result.Success -> {
+                    Log.i("UI", "success")
                     progressBar.visibility = View.INVISIBLE
 
                     chats = it.result as ArrayList<ChatModel>
@@ -144,6 +147,7 @@ class ChatActivity : AppCompatActivity() {
                     recyclerView.scrollToPosition(chats.size - 1)
                 }
                 is Result.Error -> {
+                    Log.i("UI", "error")
                     progressBar.visibility = View.INVISIBLE
                 }
             }
