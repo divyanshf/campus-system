@@ -3,7 +3,6 @@ package com.example.campus_activity.data.repository
 import android.util.Log
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.data.model.Result
-import com.example.campus_activity.data.room.ChatsDao
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -11,16 +10,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class ChatsRepository
 constructor(
     private val roomName: String
 ) {
-
-    //  Hilt variables
-    @Inject
-    lateinit var chatsDao: ChatsDao
 
     private var chatsCount : Long = 0
     private var firebaseAuth = FirebaseAuth.getInstance()

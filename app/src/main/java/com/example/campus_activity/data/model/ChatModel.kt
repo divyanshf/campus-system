@@ -2,8 +2,6 @@ package com.example.campus_activity.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
-import com.example.campus_activity.data.room.DateConverter
 import com.google.firebase.Timestamp
 import org.jetbrains.annotations.NotNull
 
