@@ -2,17 +2,22 @@ package com.example.campus_activity.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.campus_activity.data.room.DateConverter
 import com.google.firebase.Timestamp
 import org.jetbrains.annotations.NotNull
 
 @Entity(tableName = "chats_table")
 data class ChatModel(
     @PrimaryKey(autoGenerate = true) @NotNull var id:Long,
+
     @NotNull var sender:String,
+
     @NotNull var senderMail:String,
+
     @NotNull var message:String,
-    @NotNull var timestamp: Timestamp
+
+    var timestamp: Timestamp
 ){
     constructor(sender:String, senderMail: String, message:String, timestamp: Timestamp) : this(0, sender, senderMail, message, timestamp)
 }
-
