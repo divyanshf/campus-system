@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var toggle: ActionBarDrawerToggle
     lateinit var drawerLayout: DrawerLayout
 
+    private lateinit var navView:NavigationView
 
-    @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,63 +41,65 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.my_toolbar)
 
          drawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_drawer)
-
+        navView = findViewById(R.id.nav_drawer)
 
         toggle = ActionBarDrawerToggle(this, drawerLayout,toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        //  Initialize as home
-        navView.getMenu().getItem(0).isEnabled()
-
-
-
         navView.setNavigationItemSelectedListener{ item ->
-            when (item.itemId) {
-                R.id.ichome -> {
-                    val homeFragment = HomeFragment()
-                    startFragment(homeFragment)
-                }
-                R.id.icchat -> {
-                    val chatRoomFragment = RoomListFragment()
-                    startFragment(chatRoomFragment)
-                }
-                R.id.iclogout -> {
-
-                    MaterialAlertDialogBuilder(this)
-                        .setTitle("Logout")
-                        .setMessage("Are you sure ?")
-                        .setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                            firebaseAuth.signOut()
-                            val intent = Intent(this, AuthActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            startActivity(intent)
-                        }
-                        .setNegativeButton("No", null)
-                        .show()
-                    true
-
-                }
-
-            }
-            drawerLayout.closeDrawer(GravityCompat.START)
-            true
+            onNavItemSelect(item)
         }
 
-
-
-
-
-
-
+        //  Initialize
+        initialize()
 
         //  Set action bar
         setSupportActionBar(toolbar)
+    }
+
+    //  Initialize
+    private fun initialize(){
+        navView.setCheckedItem(R.id.ichome)
+        onNavItemSelect(navView.menu.getItem(0))
+    }
+
+    //  On navigation item select
+    private fun onNavItemSelect(item:MenuItem) : Boolean{
+        invalidateOptionsMenu()
+        return when (item.itemId) {
+            R.id.ichome -> {
+                val homeFragment = HomeFragment()
+                startFragment(homeFragment)
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+            R.id.icchat -> {
+                val chatRoomFragment = RoomListFragment()
+                startFragment(chatRoomFragment)
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+            R.id.iclogout -> {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Logout")
+                    .setMessage("Are you sure ?")
+                    .setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                        firebaseAuth.signOut()
+                        val intent = Intent(this, AuthActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+            else -> false
+        }
     }
 
     //  Start a fragment
@@ -118,8 +120,6 @@ class MainActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
-
-
     }
 
 

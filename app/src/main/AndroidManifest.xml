@@ -12,7 +12,7 @@
         android:roundIcon="@drawable/iiitm"
         android:supportsRtl="true"
         android:theme="@style/Theme.Campus">
-        <activity android:name=".ui.chat.NewClubActivity"></activity>
+<!--        <activity android:name=".ui.chat.NewClubActivity"></activity>-->
         <activity android:name=".ui.chat.NewClub" />
         <activity android:name=".ui.chat.ChatActivity" />
         <activity android:name=".ui.main.MainActivity"></activity>

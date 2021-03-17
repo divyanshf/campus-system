@@ -1,6 +1,7 @@
 package com.example.campus_activity.data.repository
 
 import com.example.campus_activity.data.model.FeedModel
+import com.example.campus_activity.data.model.Result
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,7 +16,7 @@ class FeedsRepository
     constructor(
     val firebaseFirestore: FirebaseFirestore
 ) {
-    val allFeeds: MutableStateFlow<List<FeedModel>> = MutableStateFlow(ArrayList())
+    val allFeeds: MutableStateFlow<Result<List<FeedModel>>> = MutableStateFlow(Result.Progress)
 
     fun insertFeed(feedModel: FeedModel){
         firebaseFirestore.collection("feeds")
@@ -36,7 +37,7 @@ class FeedsRepository
                     list.add(feed)
                 }
 
-                allFeeds.emit(list)
+                allFeeds.emit(Result.Success(list))
             }
     }
 
