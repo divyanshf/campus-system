@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull
 
 @Entity(tableName = "chats_table")
 data class ChatModel(
-    @PrimaryKey(autoGenerate = true) @NotNull var id:Long,
+    @PrimaryKey(autoGenerate = true) @NotNull var id:String,
 
     @NotNull var sender:String,
 
@@ -17,5 +17,5 @@ data class ChatModel(
 
     var timestamp: Timestamp
 ){
-    constructor(sender:String, senderMail: String, message:String, timestamp: Timestamp) : this(0, sender, senderMail, message, timestamp)
+//    constructor(sender:String, senderMail: String, message:String, timestamp: Timestamp) : this(0, sender, senderMail, message, timestamp)
 }

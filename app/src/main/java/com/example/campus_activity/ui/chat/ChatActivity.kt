@@ -130,15 +130,21 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
+        addListener()
+    }
+
+    //  Add listener
+    private fun addListener(){
         //  Add chat listener
         chatsViewModel.allChats.observe(this, {
-            when(it){
+            Log.i("Change", "Observed")
+            when (it) {
                 Result.Progress -> {
-                    Log.i("UI", "progress")
                     progressBar.visibility = View.VISIBLE
                 }
                 is Result.Success -> {
-                    Log.i("UI", "success")
+                    Log.i("Array", "${it.result}")
+
                     progressBar.visibility = View.INVISIBLE
 
                     chats = it.result as ArrayList<ChatModel>
@@ -147,8 +153,8 @@ class ChatActivity : AppCompatActivity() {
                     recyclerView.scrollToPosition(chats.size - 1)
                 }
                 is Result.Error -> {
-                    Log.i("UI", "error")
                     progressBar.visibility = View.INVISIBLE
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         })
