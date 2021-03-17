@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class ChatsRepository
 constructor(
@@ -66,6 +65,7 @@ constructor(
             allChats.emit(Result.Success(chats))
         }catch (e:Exception){
             e.printStackTrace()
+            allChats.emit(Result.Error("This chat is empty!"))
         }
         chatsCount = snapshot.childrenCount
     }
