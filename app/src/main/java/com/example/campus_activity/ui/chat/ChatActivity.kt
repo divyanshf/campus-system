@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -21,7 +20,6 @@ import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.model.RoomModel
-import com.example.campus_activity.data.repository.ChatsRepository
 import com.example.campus_activity.data.viewmodels.ChatsViewModel
 import com.example.campus_activity.ui.adapter.ChatAdapter
 import com.google.android.material.card.MaterialCardView
@@ -29,7 +27,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,10 +39,8 @@ import kotlin.time.ExperimentalTime
 @AndroidEntryPoint
 class ChatActivity : AppCompatActivity() {
 
-    //  Test realtime database
-//    private val chatsReference = fireDatabase.getReference("chats")
-//    private var testEndPoint = chatsReference.child("test")
     private var roomName = "test01"
+    private var roomId = "test01"
     private var room:RoomModel? = null
     private var isAdmin = false
 
@@ -80,6 +75,7 @@ class ChatActivity : AppCompatActivity() {
             val user = firebaseAuth.currentUser
             room = intent.getParcelableExtra("room")
             roomName = room?.name!!
+            roomId = room?.id!!
             if(room?.admin == user?.email.toString()){
                 isAdmin = true
             }
@@ -88,7 +84,7 @@ class ChatActivity : AppCompatActivity() {
             Toast.makeText(this, "Unidentified room!", Toast.LENGTH_SHORT).show()
         }
 
-        chatsViewModel = ChatsViewModel(roomName)
+        chatsViewModel = ChatsViewModel(roomId)
 
         //  Variable assignment
         toolbar = findViewById(R.id.chat_toolbar)
@@ -185,8 +181,12 @@ class ChatActivity : AppCompatActivity() {
                     dateMaterialCard.animate().translationY(0F).alpha(1F)
                 }
 
-                val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
-                dateTextView.text = day
+                try {
+                    val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
+                    dateTextView.text = day
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
 
                 super.onScrolled(recyclerView, dx, dy)
             }
