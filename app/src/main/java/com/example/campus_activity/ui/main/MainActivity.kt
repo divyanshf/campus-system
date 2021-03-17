@@ -1,21 +1,24 @@
 package com.example.campus_activity.ui.main
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.ContextMenu
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.campus_activity.R
 import com.example.campus_activity.ui.auth.AuthActivity
 import com.example.campus_activity.ui.auth.AuthActivity_GeneratedInjector
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -25,41 +28,82 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
+    lateinit var toggle: ActionBarDrawerToggle
+    lateinit var drawerLayout: DrawerLayout
 
+
+    @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         //  Initialize values
         val toolbar: Toolbar = findViewById(R.id.my_toolbar)
-        val bottomNavigation : BottomNavigationView = findViewById(R.id.bottom_navigation_bar)
 
-        //  Set bottom navigation
-        bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            when(item.itemId){
-                R.id.home -> {
-                    val homeFragment= HomeFragment()
+         drawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_drawer)
+
+
+        toggle = ActionBarDrawerToggle(this, drawerLayout,toolbar, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        //  Initialize as home
+        navView.getMenu().getItem(0).isEnabled()
+
+
+
+        navView.setNavigationItemSelectedListener{ item ->
+            when (item.itemId) {
+                R.id.ichome -> {
+                    val homeFragment = HomeFragment()
                     startFragment(homeFragment)
                 }
-                R.id.chatroom -> {
-                    val chatRoomFragment= RoomListFragment()
+                R.id.icchat -> {
+                    val chatRoomFragment = RoomListFragment()
                     startFragment(chatRoomFragment)
                 }
+                R.id.iclogout -> {
+
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle("Logout")
+                        .setMessage("Are you sure ?")
+                        .setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                            firebaseAuth.signOut()
+                            val intent = Intent(this, AuthActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                        }
+                        .setNegativeButton("No", null)
+                        .show()
+                    true
+
+                }
+
             }
+            drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
 
-        //  Initialize as home
-        bottomNavigation.selectedItemId = R.id.home
+
+
+
+
+
+
 
         //  Set action bar
         setSupportActionBar(toolbar)
     }
 
     //  Start a fragment
-    private fun startFragment(fragment:Fragment){
+    private fun startFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment,fragment)
+        transaction.replace(R.id.fragment, fragment)
         transaction.commit()
     }
 
@@ -70,23 +114,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
-            R.id.logout -> {
-                MaterialAlertDialogBuilder(this)
-                    .setTitle("Logout")
-                    .setMessage("Are you sure ?")
-                    .setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                        firebaseAuth.signOut()
-                        val intent = Intent(this, AuthActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                    }
-                    .setNegativeButton("No", null)
-                    .show()
-                true
-            }
-            else -> false
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
         }
+        return super.onOptionsItemSelected(item)
+
+
     }
+
+
+
 }
+
+
