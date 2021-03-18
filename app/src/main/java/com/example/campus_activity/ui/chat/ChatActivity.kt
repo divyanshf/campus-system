@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -120,7 +123,7 @@ class ChatActivity : AppCompatActivity() {
 
         //  Send message
         sendButton.setOnClickListener {
-            if(messageEditText.text.toString() != ""){
+            if(messageEditText.text?.isNotBlank() == true){
                 insertChatOnClick(messageEditText.text.toString())
                 messageEditText.setText("")
             }
@@ -135,22 +138,27 @@ class ChatActivity : AppCompatActivity() {
         chatsViewModel.allChats.observe(this, {
             Log.i("Change", "Observed")
             when (it) {
-                Result.Progress -> {
+                is Result.Progress -> {
                     progressBar.visibility = View.VISIBLE
                 }
                 is Result.Success -> {
-                    Log.i("Array", "${it.result}")
-
                     progressBar.visibility = View.INVISIBLE
 
-                    chats = it.result as ArrayList<ChatModel>
+                    val tmpArray = it.result as ArrayList<ChatModel>
 
-                    recyclerViewAdapter.setChats(chats)
+                    for( chat in tmpArray ){
+                        chats.add(chat)
+                        recyclerViewAdapter.addChat(chat)
+                    }
+
                     recyclerView.scrollToPosition(chats.size - 1)
                 }
                 is Result.Error -> {
                     progressBar.visibility = View.INVISIBLE
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(this, "This shouldn't have happened!", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -198,7 +206,9 @@ class ChatActivity : AppCompatActivity() {
 
     //  Insert message by "You"
     private fun insertChatOnClick(message:String){
-        chatsViewModel.insertChatOnClick(message)
+        if(message != ""){
+            chatsViewModel.insertChatOnClick(message)
+        }
     }
 
     //  Add new member to club
