@@ -1,211 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/maskgroup"
-    android:orientation="vertical"
-    android:padding="20dp"
-    tools:context=".ui.chat.NewClub">
+    android:layout_height="match_parent">
 
-
-    <TextView
-        android:id="@+id/title_new_club"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/lustria"
-        android:text="@string/club"
-        android:textColor="@color/white"
-        android:textSize="50sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.013"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/maskgroup"
+        android:orientation="vertical"
+        android:padding="20dp"
+        tools:context=".ui.chat.NewClub">
 
-    <TextView
-        android:id="@+id/club_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:text="@string/club_logo"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.019"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_new_club" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/club_logo"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/club_logo"
-        app:layout_constraintTop_toBottomOf="@+id/club_logo"
-        tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="@string/club_logo" />
-
-    <TextView
-        android:id="@+id/club_name_heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_new_club"
-        android:fontFamily="@font/comfortaa_light"
-        android:text="@string/club_name"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/club_Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.013"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/club_Name"
-        android:layout_width="360dp"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toTopOf="@+id/admin_heading"
-        app:layout_constraintEnd_toEndOf="@+id/club_name_heading"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/club_name_heading" />
-
-    <TextView
-        android:id="@+id/admin_heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/comfortaa_light"
-        android:text="@string/admin_s_roll_number"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/admin_name_layout"
-        app:layout_constraintEnd_toEndOf="@+id/club_Name"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/club_Name" />
-
-    <FrameLayout
-        android:id="@+id/admin_name_layout"
-        android:layout_width="360dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/admin_heading"
-        android:layout_marginBottom="80dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_New_Club"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        <TextView
+            android:id="@+id/title_new_club"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/lustria"
+            android:text="@string/club"
+            android:textColor="@color/white"
+            android:textSize="50sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.013"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:id="@+id/club_details"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            tools:ignore="UselessParent">
+            android:layout_below="@id/title_new_club"
+            android:background="@drawable/box"
+            android:padding="20dp"
+            android:layout_marginVertical="20dp"
+            android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/year_nclub_edit_text_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <TextView
+                android:id="@+id/club_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_weight="1"
-                android:hint="@string/year"
+                android:text="@string/club_logo"
+                android:textColor="@color/white"
+                android:layout_marginVertical="10dp"
+                android:textSize="24sp"/>
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/iiitm"/>
+
+            <TextView
+                android:id="@+id/club_name_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/comfortaa_light"
+                android:text="@string/club_name"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/club_Name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.013"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/club_name_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
                 android:padding="2dp"
-                android:textColorHint="@color/black"
                 app:boxCornerRadiusBottomStart="10dp"
                 app:boxCornerRadiusTopEnd="10dp"
-                app:boxStrokeColor="@color/black"
-                app:hintTextColor="@color/black"
-                app:placeholderText="20XX"
+                app:boxStrokeColor="@color/red"
                 app:placeholderTextColor="@color/red"
-                tools:ignore="RtlHardcoded">
+                app:placeholderText="eg. UTHAAN, AASF"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/year_nclub_edit_text"
+                    android:id="@+id/club_Name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray_light"
+                    android:textSize="22sp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/batch_nclub_edit_text_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:hint="@string/batch"
-                android:padding="2dp"
-                android:textColorHint="@color/black"
-                app:boxCornerRadiusBottomStart="10dp"
-                app:boxCornerRadiusTopEnd="10dp"
-                app:boxStrokeColor="@color/black"
-                app:hintTextColor="@color/black"
-                app:placeholderText="XXX"
-                app:placeholderTextColor="@color/red">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/batch_nclub_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/roll_nclub_edit_text_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:hint="@string/roll_no"
-                android:padding="2dp"
-                android:textColorHint="@color/black"
-                app:boxCornerRadiusBottomStart="10dp"
-                app:boxCornerRadiusTopEnd="10dp"
-                app:boxStrokeColor="@color/black"
-                app:hintTextColor="@color/black"
-                app:placeholderText="XXX"
-                app:placeholderTextColor="@color/red"
-                tools:ignore="RtlHardcoded">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/roll_nclub_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
-
-            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
-    </FrameLayout>
 
-    <Button
-        android:id="@+id/add_New_Club"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/button"
-        android:elevation="100dp"
-        android:paddingHorizontal="50dp"
-        android:paddingVertical="10dp"
-        android:text="@string/add"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="InvalidId,MissingConstraints" />
+        <LinearLayout
+            android:id="@+id/admin_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/club_details"
+            android:background="@drawable/box"
+            android:padding="20dp"
+            android:layout_marginVertical="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/admin_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/comfortaa_light"
+                android:text="@string/admin_s_roll_number"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+
+            <FrameLayout
+                android:id="@+id/admin_name_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    tools:ignore="UselessParent">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/year_nclub_edit_text_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_weight="1"
+                        android:hint="@string/year"
+                        android:padding="2dp"
+                        app:boxCornerRadiusBottomStart="10dp"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        android:textColorHint="@color/gray_light"
+                        app:boxStrokeColor="@color/red"
+                        app:placeholderTextColor="@color/red"
+                        app:placeholderText="20XX">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/year_nclub_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/batch_nclub_edit_text_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:hint="@string/batch"
+                        android:padding="2dp"
+                        android:textColorHint="@color/white"
+                        app:boxCornerRadiusBottomStart="10dp"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxStrokeColor="@color/red"
+                        app:placeholderText="XXX"
+                        app:placeholderTextColor="@color/red">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/batch_nclub_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/roll_nclub_edit_text_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:hint="@string/roll_no"
+                        android:padding="2dp"
+                        android:textColorHint="@color/white"
+                        app:boxCornerRadiusBottomStart="10dp"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxStrokeColor="@color/red"
+                        app:placeholderText="XXX"
+                        app:placeholderTextColor="@color/red">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/roll_nclub_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/add_New_Club"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button"
+            android:elevation="100dp"
+            android:paddingHorizontal="50dp"
+            android:paddingVertical="10dp"
+            android:text="@string/add"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="InvalidId,MissingConstraints" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+</ScrollView>
