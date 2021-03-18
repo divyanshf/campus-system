@@ -37,7 +37,7 @@ class FeedsRepository
                     list.add(feed)
                 }
 
-                allFeeds.emit(Result.Success(list))
+                allFeeds.emit(Result.Success.Success(list))
             }
     }
 

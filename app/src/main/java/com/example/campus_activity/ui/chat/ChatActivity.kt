@@ -1,7 +1,12 @@
 package com.example.campus_activity.ui.chat
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -11,10 +16,9 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +44,7 @@ import kotlin.time.ExperimentalTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
-class ChatActivity : AppCompatActivity() {
+class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, ChatAdapter.OnSenderItemLongClick {
 
     private var roomName = "test01"
     private var roomId = "test01"
@@ -48,8 +52,6 @@ class ChatActivity : AppCompatActivity() {
     private var isAdmin = false
 
     //  Hilt variables
-    @Inject
-    lateinit var recyclerViewAdapter: ChatAdapter
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
@@ -64,6 +66,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var dateMaterialCard:MaterialCardView
     private lateinit var dateTextView:TextView
     private lateinit var recyclerView:RecyclerView
+    private lateinit var recyclerViewAdapter: ChatAdapter
     private lateinit var fabScrollToBottom:FloatingActionButton
     private var chats:ArrayList<ChatModel> = ArrayList()
 
@@ -97,6 +100,7 @@ class ChatActivity : AppCompatActivity() {
         dateMaterialCard = findViewById(R.id.chat_date_mat_card)
         dateTextView = findViewById(R.id.chat_date_text_view)
         recyclerView = findViewById(R.id.chat_recycler_view)
+        recyclerViewAdapter = ChatAdapter(this, this, this)
         fabScrollToBottom = findViewById(R.id.foa_scroll_to_bottom)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -133,6 +137,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     //  Add listener
+    @ExperimentalTime
     private fun addListener(){
         //  Add chat listener
         chatsViewModel.allChats.observe(this, {
@@ -141,7 +146,18 @@ class ChatActivity : AppCompatActivity() {
                 is Result.Progress -> {
                     progressBar.visibility = View.VISIBLE
                 }
-                is Result.Success -> {
+                is Result.Success.ChatLoad -> {
+                    progressBar.visibility = View.INVISIBLE
+
+                    val tmpArray = it.result as ArrayList<ChatModel>
+
+                    chats = tmpArray
+                    recyclerViewAdapter.setChats(tmpArray)
+
+                    recyclerView.scrollToPosition(chats.size - 1)
+                    handleDateCard()
+                }
+                is Result.Success.ChatAdd -> {
                     progressBar.visibility = View.INVISIBLE
 
                     val tmpArray = it.result as ArrayList<ChatModel>
@@ -152,6 +168,7 @@ class ChatActivity : AppCompatActivity() {
                     }
 
                     recyclerView.scrollToPosition(chats.size - 1)
+                    handleDateCard()
                 }
                 is Result.Error -> {
                     progressBar.visibility = View.INVISIBLE
@@ -170,8 +187,6 @@ class ChatActivity : AppCompatActivity() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val currentBottomPosition = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                val currentCompleteTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-                val currentTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
                 //  Handle fab icon
                 if(currentBottomPosition == chats.size - 1){
@@ -181,26 +196,34 @@ class ChatActivity : AppCompatActivity() {
                     fabScrollToBottom.show()
                 }
 
-                //  Handle date text
-                if (currentCompleteTopPosition == 0){
-                    dateMaterialCard.animate().translationY(-100F).alpha(0F)
-                }
-                else{
-                    dateMaterialCard.animate().translationY(0F).alpha(1F)
-                }
-
-                try {
-                    val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
-                    dateTextView.text = day
-                }catch (e:Exception){
-                    e.printStackTrace()
-                }
+                handleDateCard()
 
                 super.onScrolled(recyclerView, dx, dy)
             }
         })
         fabScrollToBottom.setOnClickListener {
             recyclerView.smoothScrollToPosition(recyclerView.bottom)
+        }
+    }
+
+    @ExperimentalTime
+    private fun handleDateCard(){
+        val currentCompleteTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+        val currentTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+
+        //  Handle date text
+        if (currentCompleteTopPosition == 0){
+            dateMaterialCard.visibility = View.INVISIBLE
+        }
+        else{
+            dateMaterialCard.visibility = View.VISIBLE
+        }
+
+        try {
+            val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
+            dateTextView.text = day
+        }catch (e:Exception){
+            e.printStackTrace()
         }
     }
 
@@ -267,6 +290,56 @@ class ChatActivity : AppCompatActivity() {
             }
             else -> false
         }
+    }
+
+    private fun report(position: Int){
+        Log.i("Forward", position.toString())
+    }
+
+    private fun unsend(position: Int){
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Unsend")
+            .setMessage("Are you sure ?")
+            .setPositiveButton("Yes"){ _: DialogInterface, _: Int ->
+                chatsViewModel.deleteChat(chats[position])
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    private fun copy(position: Int){
+        val chat = chats[position]
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(chat.id, chat.message)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, "Message copied", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onReceiverItemLongClickHandler(position: Int, view: View?) {
+        val items = arrayOf("Unsend", "Copy")
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setAdapter(ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text2, items) as ListAdapter){ _: DialogInterface, i: Int ->
+                when(i){
+                    0 -> unsend(position)
+                    1 -> copy(position)
+                }
+            }
+        dialog.show()
+    }
+
+    override fun onSenderItemLongClickHandler(position: Int, view: View?) {
+        val items = arrayOf("Copy")
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setAdapter(ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text2, items) as ListAdapter){ _: DialogInterface, i: Int ->
+                when(i){
+                    0 -> copy(position)
+                }
+            }
+
+        dialog.show()
+
     }
 
 }

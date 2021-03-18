@@ -24,19 +24,32 @@ constructor(
     init {
         firestoreRef
             .addSnapshotListener { value, _ ->
+                var remove = false
                 try {
-                    val changes = createArrayFromChanges(value?.documentChanges)
-                    changes.sortBy {
-                        it.timestamp
+                    for (chats in value?.documentChanges!!){
+                        if (chats.type == DocumentChange.Type.REMOVED){
+                            remove = true
+                            break
+                        }
                     }
-                    _allChats.value = Result.Success(changes)
+                    if (!remove){
+                        val changes = createArrayFromChanges(value?.documentChanges)
+                        Log.i("Changes", value?.documentChanges!![0].type.toString())
+                        changes.sortBy {
+                            it.timestamp
+                        }
+                        _allChats.value = Result.Success.ChatAdd(changes)
+                    }
+                    else{
+                        val array = createArrayFromSnaps(value.documents)
+                        array.sortBy {
+                            it.timestamp
+                        }
+                        _allChats.value = Result.Success.ChatLoad(array)
+                    }
                 }catch (e:Exception){
                     e.printStackTrace()
                 }
-//                val array = createArrayFromSnaps(value?.documents)
-//                array.sortBy {
-//                    it.timestamp
-//                }
             }
     }
 
@@ -45,6 +58,12 @@ constructor(
         val newChat = ChatModel("", user?.displayName!!, user.email!!, message, Timestamp.now())
         firestoreRef
             .add(createMapFromChat(newChat))
+    }
+
+    fun deleteChat(chatModel: ChatModel){
+        firestoreRef
+            .document(chatModel.id)
+            .delete()
     }
 
     private fun createArrayFromSnaps(snapList: MutableList<DocumentSnapshot>?):ArrayList<ChatModel>{
@@ -71,14 +90,16 @@ constructor(
 
         if (snapList != null) {
             for(i in snapList){
-                val note = ChatModel(
-                    i.document.id,
-                    i.document["sender"] as String,
-                    i.document["senderMail"] as String,
-                    i.document["message"] as String,
-                    i.document["timestamp"] as Timestamp
-                )
-                chats.add(note)
+                if(i.type == DocumentChange.Type.ADDED){
+                    val note = ChatModel(
+                        i.document.id,
+                        i.document["sender"] as String,
+                        i.document["senderMail"] as String,
+                        i.document["message"] as String,
+                        i.document["timestamp"] as Timestamp
+                    )
+                    chats.add(note)
+                }
             }
         }
 
