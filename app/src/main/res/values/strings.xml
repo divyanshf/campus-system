@@ -33,6 +33,8 @@
     <string name="upload">UPLOAD</string>
     <string name="new_feed">New Feed</string>
     <string name="add_feed_from">from</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 
     <array name="clubs">
         <item>AASF</item>

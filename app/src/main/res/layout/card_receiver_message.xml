@@ -31,6 +31,10 @@
                 android:minWidth="100dp"
                 android:layout_gravity="end"
                 android:layout_marginTop="5dp"
+                android:linksClickable="true"
+                android:autoLink="all"
+                android:textColorLink="@color/blue"
+                android:textIsSelectable="true"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="15sp"
                 android:text="@string/this_is_a_message"/>

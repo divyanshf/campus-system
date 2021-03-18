@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,22 +21,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
+import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.model.RoomModel
+import com.example.campus_activity.data.viewmodels.ChatsViewModel
 import com.example.campus_activity.ui.adapter.ChatAdapter
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.Instant
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -44,12 +42,8 @@ import kotlin.time.ExperimentalTime
 @AndroidEntryPoint
 class ChatActivity : AppCompatActivity() {
 
-    //  Test realtime database
-    private val fireDatabase = FirebaseDatabase.getInstance()
-    private var chatsCount : Long = 0
-    private val chatsReference = fireDatabase.getReference("chats")
-    private var testEndPoint = chatsReference.child("test")
     private var roomName = "test01"
+    private var roomId = "test01"
     private var room:RoomModel? = null
     private var isAdmin = false
 
@@ -60,6 +54,7 @@ class ChatActivity : AppCompatActivity() {
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var firebaseFirestore: FirebaseFirestore
+    private lateinit var chatsViewModel : ChatsViewModel
 
     //  Variable declaration
     private lateinit var toolbar:Toolbar
@@ -81,15 +76,18 @@ class ChatActivity : AppCompatActivity() {
         //  Add endpoint
         try {
             val user = firebaseAuth.currentUser
-            room = intent.getParcelableExtra<RoomModel>("room")
+            room = intent.getParcelableExtra("room")
             roomName = room?.name!!
+            roomId = room?.id!!
             if(room?.admin == user?.email.toString()){
                 isAdmin = true
             }
-            testEndPoint = chatsReference.child(roomName)
+            //  testEndPoint = chatsReference.child(roomName)
         }catch (e:Exception){
             Toast.makeText(this, "Unidentified room!", Toast.LENGTH_SHORT).show()
         }
+
+        chatsViewModel = ChatsViewModel(roomId)
 
         //  Variable assignment
         toolbar = findViewById(R.id.chat_toolbar)
@@ -104,22 +102,6 @@ class ChatActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = recyclerViewAdapter
         fabScrollToBottom.hide()
-
-        //  Chat realtime listener
-        val chatListener = object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(chats.size == 0){
-                    loadAllChats(snapshot)
-                }
-                else if(snapshot.childrenCount.toInt() > chatsCount){
-                    addNewChatsOnChange(snapshot)
-                }
-                chatsCount = snapshot.childrenCount
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-        }
 
         //  Initialize action bar
         setSupportActionBar(toolbar)
@@ -141,14 +123,45 @@ class ChatActivity : AppCompatActivity() {
 
         //  Send message
         sendButton.setOnClickListener {
-            if(messageEditText.text.toString() != ""){
+            if(messageEditText.text?.isNotBlank() == true){
                 insertChatOnClick(messageEditText.text.toString())
                 messageEditText.setText("")
             }
         }
 
+        addListener()
+    }
+
+    //  Add listener
+    private fun addListener(){
         //  Add chat listener
-        testEndPoint.addValueEventListener(chatListener)
+        chatsViewModel.allChats.observe(this, {
+            Log.i("Change", "Observed")
+            when (it) {
+                is Result.Progress -> {
+                    progressBar.visibility = View.VISIBLE
+                }
+                is Result.Success -> {
+                    progressBar.visibility = View.INVISIBLE
+
+                    val tmpArray = it.result as ArrayList<ChatModel>
+
+                    for( chat in tmpArray ){
+                        chats.add(chat)
+                        recyclerViewAdapter.addChat(chat)
+                    }
+
+                    recyclerView.scrollToPosition(chats.size - 1)
+                }
+                is Result.Error -> {
+                    progressBar.visibility = View.INVISIBLE
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(this, "This shouldn't have happened!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
     //  Scroll to bottom
@@ -176,8 +189,12 @@ class ChatActivity : AppCompatActivity() {
                     dateMaterialCard.animate().translationY(0F).alpha(1F)
                 }
 
-                val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
-                dateTextView.text = day
+                try {
+                    val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
+                    dateTextView.text = day
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
 
                 super.onScrolled(recyclerView, dx, dy)
             }
@@ -187,67 +204,11 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    //  Load chats on startup
-    private fun loadAllChats(snapshot : DataSnapshot){
-        try {
-            val array = snapshot.value as ArrayList<*>
-            for(i in array){
-                val newChat = convertToChat(i as HashMap<*, *>)
-                insertChat(newChat)
-            }
-            recyclerViewAdapter.setChats(chats)
-            recyclerView.scrollToPosition(chats.size - 1)
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
-        progressBar.visibility = View.INVISIBLE
-        dateMaterialCard.visibility = View.VISIBLE
-    }
-
-    //  Add chats on change
-    private fun addNewChatsOnChange(snapshot: DataSnapshot){
-        try {
-            val newChatHash = (snapshot.value as ArrayList<*>)[snapshot.childrenCount.toInt() - 1] as HashMap<*,*>
-            val newChat = convertToChat(newChatHash)
-            insertChat(newChat)
-            recyclerViewAdapter.addChat()
-            recyclerView.scrollToPosition(chats.size - 1)
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
-    }
-
-    //  Convert map to chat model
-    private fun convertToChat(hashMap: HashMap<*, *>) : ChatModel{
-        return ChatModel(
-                hashMap["id"] as Long,
-                hashMap["sender"] as String,
-                hashMap["senderMail"] as String,
-                hashMap["message"]as String,
-                convertToTimestamp(hashMap["timestamp"] as HashMap<*, *>)
-        )
-    }
-
-    //  Convert map to timestamp
-    private fun convertToTimestamp(hashMap: HashMap<*, *>) : Timestamp{
-        return Timestamp(hashMap["seconds"] as Long, (hashMap["nanoseconds"] as Long).toInt())
-    }
-
-    //  Insert chat by model
-    private fun insertChat(chat:ChatModel): ChatModel {
-        chats.add(chat)
-        recyclerView.scrollToPosition(chats.size - 1)
-        return chat
-    }
-
     //  Insert message by "You"
     private fun insertChatOnClick(message:String){
-        val time = Timestamp(Date.from(Instant.now()))
-        val user = firebaseAuth.currentUser
-        val newChat = ChatModel(chatsCount, user?.displayName!!, user.email!!, message, time)
-
-        //  Test database
-        testEndPoint.child("$chatsCount").setValue(newChat)
+        if(message != ""){
+            chatsViewModel.insertChatOnClick(message)
+        }
     }
 
     //  Add new member to club

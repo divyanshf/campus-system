@@ -1,7 +1,10 @@
 package com.example.campus_activity.dependecy
 
+import com.example.campus_activity.data.repository.ChatsRepository
 import com.example.campus_activity.data.repository.FeedsRepository
 import com.example.campus_activity.data.repository.RoomsRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides

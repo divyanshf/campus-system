@@ -1,21 +1,24 @@
 package com.example.campus_activity.ui.main
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.ContextMenu
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.campus_activity.R
 import com.example.campus_activity.ui.auth.AuthActivity
 import com.example.campus_activity.ui.auth.AuthActivity_GeneratedInjector
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -25,6 +28,10 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
+    lateinit var toggle: ActionBarDrawerToggle
+    lateinit var drawerLayout: DrawerLayout
+
+    private lateinit var navView:NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,46 +39,50 @@ class MainActivity : AppCompatActivity() {
 
         //  Initialize values
         val toolbar: Toolbar = findViewById(R.id.my_toolbar)
-        val bottomNavigation : BottomNavigationView = findViewById(R.id.bottom_navigation_bar)
 
-        //  Set bottom navigation
-        bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            when(item.itemId){
-                R.id.home -> {
-                    val homeFragment= HomeFragment()
-                    startFragment(homeFragment)
-                }
-                R.id.chatroom -> {
-                    val chatRoomFragment= RoomListFragment()
-                    startFragment(chatRoomFragment)
-                }
-            }
-            true
+         drawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_drawer)
+
+        toggle = ActionBarDrawerToggle(this, drawerLayout,toolbar, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        navView.setNavigationItemSelectedListener{ item ->
+            onNavItemSelect(item)
         }
 
-        //  Initialize as home
-        bottomNavigation.selectedItemId = R.id.home
+        //  Initialize
+        initialize()
 
         //  Set action bar
         setSupportActionBar(toolbar)
     }
 
-    //  Start a fragment
-    private fun startFragment(fragment:Fragment){
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment,fragment)
-        transaction.commit()
+    //  Initialize
+    private fun initialize(){
+        navView.setCheckedItem(R.id.ichome)
+        onNavItemSelect(navView.menu.getItem(0))
     }
 
-    //  Menu options
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main_activity, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
-            R.id.logout -> {
+    //  On navigation item select
+    private fun onNavItemSelect(item:MenuItem) : Boolean{
+        invalidateOptionsMenu()
+        return when (item.itemId) {
+            R.id.ichome -> {
+                val homeFragment = HomeFragment()
+                startFragment(homeFragment)
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+            R.id.icchat -> {
+                val chatRoomFragment = RoomListFragment()
+                startFragment(chatRoomFragment)
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+            R.id.iclogout -> {
                 MaterialAlertDialogBuilder(this)
                     .setTitle("Logout")
                     .setMessage("Are you sure ?")
@@ -84,9 +95,35 @@ class MainActivity : AppCompatActivity() {
                     }
                     .setNegativeButton("No", null)
                     .show()
+                drawerLayout.closeDrawer(GravityCompat.START)
                 true
             }
             else -> false
         }
     }
+
+    //  Start a fragment
+    private fun startFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment, fragment)
+        transaction.commit()
+    }
+
+    //  Menu options
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main_activity, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+
 }
+
+
