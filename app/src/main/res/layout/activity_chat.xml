@@ -84,6 +84,8 @@
             android:hint="@string/type_a_message"
             android:textColor="@color/gray"
             android:textColorHint="@color/gray"
+            android:linksClickable="true"
+            android:autoLink="all"
             android:inputType="textMultiLine"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

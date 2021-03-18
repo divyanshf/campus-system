@@ -26,15 +26,17 @@ constructor(
             .addSnapshotListener { value, _ ->
                 try {
                     val changes = createArrayFromChanges(value?.documentChanges)
-                    Log.i("Changes", changes.toString())
+                    changes.sortBy {
+                        it.timestamp
+                    }
+                    _allChats.value = Result.Success(changes)
                 }catch (e:Exception){
                     e.printStackTrace()
                 }
-                val array = createArrayFromSnaps(value?.documents)
-                array.sortBy {
-                    it.timestamp
-                }
-                _allChats.value = Result.Success(array)
+//                val array = createArrayFromSnaps(value?.documents)
+//                array.sortBy {
+//                    it.timestamp
+//                }
             }
     }
 

@@ -130,7 +130,8 @@ constructor(
         notifyDataSetChanged()
     }
 
-    fun addChat(){
+    fun addChat(chat:ChatModel){
+        chats.add(chat)
         notifyItemInserted(chats.size - 1)
     }
 
@@ -207,7 +208,7 @@ constructor(
     }
 
     @ExperimentalTime
-    fun getDay(timestamp: Timestamp): String?{
+    fun getDay(timestamp: Timestamp): String {
         val timeMS = timestamp.toDate().time.milliseconds.toLongMilliseconds()
         val timeCalendar = Calendar.getInstance()
         timeCalendar.timeInMillis = timeMS
