@@ -26,27 +26,40 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/club_logo"
+        android:id="@+id/club_logo_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
         android:text="@string/club_logo"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/add_logo"
         app:layout_constraintHorizontal_bias="0.019"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_new_club" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/club_logo_image_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:contentDescription="@string/club_logo"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/club_logo_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/club_logo_text_view" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/club_logo"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/club_logo"
-        app:layout_constraintTop_toBottomOf="@+id/club_logo"
-        tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="@string/club_logo" />
+        android:layout_marginTop="144dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginBottom="196dp"
+        android:src="@drawable/add_club_logo"
+        app:backgroundTint="@color/red"
+        app:layout_constraintBottom_toTopOf="@+id/club_Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.75"
+        app:maxImageSize="40dp" />
 
     <TextView
         android:id="@+id/club_name_heading"

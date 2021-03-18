@@ -1,13 +1,16 @@
 package com.example.campus_activity.ui.chat
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campus_activity.R
 import com.example.campus_activity.data.repository.RoomsRepository
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
@@ -20,11 +23,15 @@ class NewClub : AppCompatActivity() {
     lateinit var roomsRepository: RoomsRepository
 
     lateinit var clubEdt: EditText
-    lateinit var adminEdt: EditText
     lateinit var btnAdd: Button
     private lateinit var editYear: EditText
     private lateinit var editBatch: EditText
     private lateinit var editRoll: EditText
+    lateinit var clubLogo: ImageView
+    lateinit var addLogo: FloatingActionButton
+
+    val pickImage = 100
+    private var imageUri : Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +42,26 @@ class NewClub : AppCompatActivity() {
         editBatch =findViewById(R.id.batch_nclub_edit_text)
         editRoll = findViewById(R.id.roll_nclub_edit_text)
         btnAdd = findViewById(R.id.add_New_Club)
+        clubLogo = findViewById(R.id.club_logo_image_view)
+        addLogo = findViewById(R.id.add_logo)
 
         btnAdd.setOnClickListener {
             adding()
         }
+        addLogo.setOnClickListener{
+            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            startActivityForResult(gallery, pickImage)
+        }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        clubLogo.visibility = View.VISIBLE
+        if (resultCode == RESULT_OK && requestCode == pickImage) {
+            imageUri = data?.data
+            clubLogo.setImageURI(imageUri)
+        }
     }
 
     private fun adding() {
