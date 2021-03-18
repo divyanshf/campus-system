@@ -2,6 +2,7 @@ package com.example.campus_activity.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.qualifiers.ActivityContext
@@ -19,16 +21,14 @@ import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@ActivityScoped
 class ChatAdapter
-@Inject
 constructor(
-    @ActivityContext
-    context: Context
+    val context: Context,
+    val receiverListener: OnReceiverItemLongClick,
+    val senderListener: OnSenderItemLongClick
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
+    private var firebaseAuth = FirebaseAuth.getInstance()
 
     private val VIEW_TYPE_SENDER = 1
     private val VIEW_TYPE_RECEIVER = 2
@@ -135,10 +135,14 @@ constructor(
         notifyItemInserted(chats.size - 1)
     }
 
-    inner class SenderChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
+    inner class SenderChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView), View.OnLongClickListener {
         private var senderView: TextView = itemView.findViewById(R.id.sender_name)
         private var messageView:TextView = itemView.findViewById(R.id.message_text_view)
         private var timeView:TextView = itemView.findViewById(R.id.time_text_view)
+
+        init {
+            itemView.setOnLongClickListener(this)
+        }
 
         @SuppressLint("SetTextI18n")
         fun bind(currentChat:ChatModel){
@@ -151,11 +155,20 @@ constructor(
 
             timeView.text = timestamp.substring(11, 16)
         }
+
+        override fun onLongClick(v: View?): Boolean {
+            senderListener.onSenderItemLongClickHandler(adapterPosition, v)
+            return true
+        }
     }
 
-    inner class ReceiverChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
+    inner class ReceiverChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView), View.OnLongClickListener{
         private var messageView:TextView = itemView.findViewById(R.id.message_text_view)
         private var timeView:TextView = itemView.findViewById(R.id.time_text_view)
+
+        init {
+            itemView.setOnLongClickListener(this)
+        }
 
         @SuppressLint("SetTextI18n")
         fun bind(currentChat:ChatModel){
@@ -165,13 +178,22 @@ constructor(
             timeView.text = timestamp.substring(11, 16)
 
         }
+
+        override fun onLongClick(v: View?): Boolean {
+            receiverListener.onReceiverItemLongClickHandler(adapterPosition, v)
+            return true
+        }
     }
 
-    inner class SenderDateChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
+    inner class SenderDateChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView), View.OnLongClickListener{
         private var dateView:TextView = itemView.findViewById(R.id.date_text_view)
         private var senderView: TextView = itemView.findViewById(R.id.sender_name)
         private var messageView:TextView = itemView.findViewById(R.id.message_text_view)
         private var timeView:TextView = itemView.findViewById(R.id.time_text_view)
+
+        init {
+            itemView.setOnLongClickListener(this)
+        }
 
         @ExperimentalTime
         @SuppressLint("SetTextI18n")
@@ -187,12 +209,21 @@ constructor(
             val day = getDay(currentChat.timestamp)
             dateView.text = day
         }
+
+        override fun onLongClick(v: View?): Boolean {
+            senderListener.onSenderItemLongClickHandler(adapterPosition, v)
+            return true
+        }
     }
 
-    inner class ReceiverDateChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
+    inner class ReceiverDateChatViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView), View.OnLongClickListener{
         private var dateView:TextView = itemView.findViewById(R.id.date_text_view)
         private var messageView:TextView = itemView.findViewById(R.id.message_text_view)
         private var timeView:TextView = itemView.findViewById(R.id.time_text_view)
+
+        init {
+            itemView.setOnLongClickListener(this)
+        }
 
         @ExperimentalTime
         @SuppressLint("SetTextI18n")
@@ -204,6 +235,11 @@ constructor(
 
             val day = getDay(currentChat.timestamp)
             dateView.text = day
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            receiverListener.onReceiverItemLongClickHandler(adapterPosition, v)
+            return true
         }
     }
 
@@ -230,4 +266,11 @@ constructor(
         }
     }
 
+    interface OnReceiverItemLongClick{
+        fun onReceiverItemLongClickHandler(position: Int, view: View?)
+    }
+
+    interface OnSenderItemLongClick{
+        fun onSenderItemLongClickHandler(position: Int, view: View?)
+    }
 }

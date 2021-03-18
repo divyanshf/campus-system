@@ -21,4 +21,8 @@ constructor(
     fun insertChatOnClick(message:String){
         repository.insertChatToDB(message)
     }
+
+    fun deleteChat(chatModel: ChatModel){
+        repository.deleteChat(chatModel)
+    }
 }

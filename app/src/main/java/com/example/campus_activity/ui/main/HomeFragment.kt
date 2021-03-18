@@ -95,7 +95,7 @@ class HomeFragment : Fragment() {
                 is Result.Progress -> {
                     progressBar.visibility = View.VISIBLE
                 }
-                is Result.Success -> {
+                is Result.Success.Success -> {
                     feedsAdapter.setFeed(it.result)
                     progressBar.visibility = View.GONE
                 }
