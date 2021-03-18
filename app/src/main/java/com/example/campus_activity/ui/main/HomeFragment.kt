@@ -109,41 +109,45 @@ class HomeFragment : Fragment() {
 
     private fun setUpAddFeed(){
         val user = firebaseAuth.currentUser
-        roomsRepository.getAllRooms()
-        rooms.observe(viewLifecycleOwner, {
-            val testClubs = ArrayList<String>()
-            it.map { r ->
-                val checkString = r.members?.find {s ->
-                    s == user?.email
-                }
-                if(user?.email.toString() == r.admin || checkString == user?.email){
-                    testClubs.add(r.name?.toUpperCase(Locale.ROOT)!!)
-                }
-            }
-
-            //  Check if member or admin
-            if(testClubs.isEmpty()){
-                addFeedCard.visibility = View.GONE
-            }
-            else{
-                addFeedCard.visibility = View.VISIBLE
-                val adapter = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_gallery_item,
-                    testClubs
-                )
-
-                adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
-                spinner.adapter = adapter
-
-                uploadButton.setOnClickListener {
-                    if(newFeed.text.toString() != "" && spinner.selectedItem.toString() != ""){
-                        addFeed(newFeed.text.toString(), spinner.selectedItem.toString())
-                        newFeed.setText("")
+        if(user != null){
+            roomsRepository.getAllRooms()
+            rooms.observe(viewLifecycleOwner, {
+                val testClubs = ArrayList<String>()
+                it.map { r ->
+                    val checkString = r.members?.find {s ->
+                        s == user?.email
+                    }
+                    if(user?.email.toString() == r.admin || checkString == user?.email){
+                        testClubs.add(r.name?.toUpperCase(Locale.ROOT)!!)
                     }
                 }
-            }
-        })
+
+                //  Check if member or admin
+                if(testClubs.isEmpty()){
+                    addFeedCard.visibility = View.GONE
+                }
+                else{
+                    addFeedCard.visibility = View.VISIBLE
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_gallery_item,
+                        testClubs
+                    )
+
+                    adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+                    spinner.adapter = adapter
+
+                    uploadButton.setOnClickListener {
+                        if(newFeed.text.toString() != "" && spinner.selectedItem.toString() != ""){
+                            addFeed(newFeed.text.toString(), spinner.selectedItem.toString())
+                            newFeed.setText("")
+                        }
+                    }
+                }
+            })
+        }else{
+            addFeedCard.visibility = View.GONE
+        }
     }
 
     //  Add a new feed

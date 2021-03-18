@@ -6,6 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
@@ -38,6 +41,7 @@ class RoomListFragment : Fragment() {
 
     private var user: FirebaseUser? = null
     private lateinit var recyclerView: RecyclerView
+    private lateinit var notMember: LinearLayout
     private lateinit var btnToClub : FloatingActionButton
     private var rooms:List<RoomModel> = ArrayList()
     private lateinit var allRooms:LiveData<List<RoomModel>>
@@ -55,6 +59,7 @@ class RoomListFragment : Fragment() {
         user = firebaseAuth.currentUser
         checkAdmin()
 
+        notMember = view.findViewById(R.id.not_member)
         btnToClub= view.findViewById(R.id.fabToNewClub)
         allRooms = roomsRepository.allRooms.asLiveData()
 
@@ -79,9 +84,13 @@ class RoomListFragment : Fragment() {
     }
 
     private fun checkAdmin(){
-        val email = user?.email!!.toString()
-        if(email.substring(0, 3) == "adm" && email.substring(4, 8) == "0000"){
-            isAdmin = true
+        try {
+            val email = user?.email!!.toString()
+            if(email.substring(0, 3) == "adm" && email.substring(4, 8) == "0000"){
+                isAdmin = true
+            }
+        }catch (e:Exception){
+            Toast.makeText(context, "Unauthenticated user", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -92,26 +101,34 @@ class RoomListFragment : Fragment() {
 
     private fun fetchingData()
     {
-        roomsRepository.getAllRooms()
-        allRooms.observe(viewLifecycleOwner, {
-            if(isAdmin){
-                rooms = it
-                roomsAdapter.setFeed(it)
-            }
-            else{
-                val email = user?.email!!.toString()
-                val tempRooms = ArrayList<RoomModel>()
-                it.map { r ->
-                    val checkString = r.members?.find {s ->
-                        s == user?.email
+        if(user != null){
+            roomsRepository.getAllRooms()
+            allRooms.observe(viewLifecycleOwner, {
+                if(isAdmin){
+                    rooms = it
+                    roomsAdapter.setFeed(it)
+                }
+                else{
+                    val email = user?.email!!.toString()
+                    val tempRooms = ArrayList<RoomModel>()
+                    it.map { r ->
+                        val checkString = r.members?.find {s ->
+                            s == user?.email
+                        }
+                        if(r.admin == email || checkString == user?.email){
+                            tempRooms.add(r)
+                        }
                     }
-                    if(r.admin == email || checkString == user?.email){
-                        tempRooms.add(r)
+                    rooms = tempRooms
+                    roomsAdapter.setFeed(tempRooms)
+                    if(rooms.isEmpty()){
+                        notMember.visibility = View.VISIBLE
                     }
                 }
-                rooms = tempRooms
-                roomsAdapter.setFeed(tempRooms)
-            }
-        })
+            })
+        }
+        else{
+            notMember.visibility = View.VISIBLE
+        }
     }
 }
