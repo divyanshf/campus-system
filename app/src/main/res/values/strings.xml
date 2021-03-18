@@ -35,6 +35,14 @@
     <string name="add_feed_from">from</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="club">Club</string>
+    <string name="club_name">Club Name</string>
+    <string name="admin_s_roll_number">Admin\'s Roll Number</string>
+    <string name="year">Year</string>
+    <string name="batch">Batch</string>
+    <string name="roll_no">Roll No.</string>
+    <string name="add">Add</string>
+    <string name="club_logo">Club Logo</string>
 
     <array name="clubs">
         <item>AASF</item>
