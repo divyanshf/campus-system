@@ -27,8 +27,7 @@ class NewClub : AppCompatActivity() {
     private lateinit var editYear: EditText
     private lateinit var editBatch: EditText
     private lateinit var editRoll: EditText
-    lateinit var clubLogo: ImageView
-    lateinit var addLogo: FloatingActionButton
+    lateinit var addLogo: ImageView
 
     val pickImage = 100
     private var imageUri : Uri? = null
@@ -42,8 +41,7 @@ class NewClub : AppCompatActivity() {
         editBatch =findViewById(R.id.batch_nclub_edit_text)
         editRoll = findViewById(R.id.roll_nclub_edit_text)
         btnAdd = findViewById(R.id.add_New_Club)
-        clubLogo = findViewById(R.id.club_logo_image_view)
-        addLogo = findViewById(R.id.add_logo)
+        addLogo = findViewById(R.id.add_logo_button)
 
         btnAdd.setOnClickListener {
             adding()
@@ -57,10 +55,9 @@ class NewClub : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        clubLogo.visibility = View.VISIBLE
         if (resultCode == RESULT_OK && requestCode == pickImage) {
             imageUri = data?.data
-            clubLogo.setImageURI(imageUri)
+            addLogo.setImageURI(imageUri)
         }
     }
 

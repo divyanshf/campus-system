@@ -15,14 +15,15 @@
         android:theme="@style/Theme.Campus">
 <!--        <activity android:name=".ui.chat.NewClubActivity"></activity>-->
         <activity android:name=".ui.chat.NewClub" >
+        </activity>
+        <activity android:name=".ui.chat.ChatActivity" />
+        <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.chat.ChatActivity" />
-        <activity android:name=".ui.main.MainActivity"></activity>
         <activity android:name=".ui.auth.AuthActivity">
         </activity>
 
