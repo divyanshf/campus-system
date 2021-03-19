@@ -49,6 +49,7 @@ constructor(
                     }
                 }catch (e:Exception){
                     e.printStackTrace()
+                    _allChats.value = Result.Error("Empty Chat")
                 }
             }
     }

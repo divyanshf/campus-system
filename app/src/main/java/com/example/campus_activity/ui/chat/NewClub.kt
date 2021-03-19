@@ -7,9 +7,13 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.campus_activity.R
+import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.repository.RoomsRepository
+import com.example.campus_activity.data.viewmodels.RoomsViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -22,6 +26,8 @@ class NewClub : AppCompatActivity() {
     @Inject
     lateinit var roomsRepository: RoomsRepository
 
+    private val roomsViewModel : RoomsViewModel by viewModels()
+
     lateinit var clubEdt: EditText
     lateinit var btnAdd: Button
     private lateinit var editYear: EditText
@@ -31,6 +37,7 @@ class NewClub : AppCompatActivity() {
 
     val pickImage = 100
     private var imageUri : Uri? = null
+    private var downloadUri : Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +64,16 @@ class NewClub : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == pickImage) {
             imageUri = data?.data
-            addLogo.setImageURI(imageUri)
+            try {
+                addLogo.setImageURI(imageUri)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
     }
 
     private fun adding() {
-        val clubText: String = clubEdt.text.toString()
+        val clubText: String = clubEdt.text.toString().toUpperCase(Locale.ROOT)
 
         val year :String = editYear.text.toString()
         val batch :String = editBatch.text.toString()
@@ -74,16 +85,49 @@ class NewClub : AppCompatActivity() {
 
         if (clubText.isNotEmpty() && rollToMail(year,batch,roll).isNotEmpty()) {
             try {
-                roomsRepository.insertRoom(clubText.toUpperCase(Locale.ROOT), admin, memberArrayList)
-                finish()
-                Toast.makeText(this, "New club added", Toast.LENGTH_SHORT).show()
+                uploadImage(clubText, admin, memberArrayList)
+//                roomsRepository.insertImage(clubText, clubText.toUpperCase(Locale.ROOT), admin, memberArrayList, imageUri!!)
+//                finish()
+//                Toast.makeText(this, "New club added", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         } else {
             Toast.makeText(this, "Please fill up the fields ", Toast.LENGTH_LONG).show()
         }
+    }
 
+    private fun uploadImage(name:String, rollNmber:String, members:ArrayList<String>){
+        if(imageUri != null){
+            roomsViewModel.uploadImage(name, imageUri!!).observe(this, {
+                when (it) {
+                    is Result.Progress -> {
+                        Toast.makeText(this, "Upload In Progress. . .", Toast.LENGTH_SHORT).show()
+                    }
+                    is Result.Success.Success -> {
+                        Toast.makeText(this, "Image Uploaded !", Toast.LENGTH_SHORT).show()
+                        downloadUri = it.result
+                        Log.i("Download", downloadUri.toString())
+                        uploadClub(name, rollNmber, members)
+                    }
+                    is Result.Error -> {
+                        Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Toast.makeText(this, "This shouldn't have happened!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+        }
+        else{
+            uploadClub(name, rollNmber, members)
+        }
+    }
+
+    private fun uploadClub(name:String, rollNmber:String, members:ArrayList<String>){
+        roomsViewModel.uploadClub(name, rollNmber, members, downloadUri)
+        finish()
+        Toast.makeText(this, "Club Added!", Toast.LENGTH_SHORT).show()
     }
 
     private fun rollToMail(y: String , b : String, r : String): String {
