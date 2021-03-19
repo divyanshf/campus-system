@@ -1,26 +1,24 @@
 package com.example.campus_activity.ui.chat
 
+import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.*
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.provider.MediaStore
 import android.util.Log
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campus_activity.R
@@ -37,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
+import java.security.Permission
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -68,7 +67,10 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
     private lateinit var recyclerView:RecyclerView
     private lateinit var recyclerViewAdapter: ChatAdapter
     private lateinit var fabScrollToBottom:FloatingActionButton
+    private lateinit var sharedPreferences: SharedPreferences
     private var chats:ArrayList<ChatModel> = ArrayList()
+    private val pickImage = 100
+    private val permissionCode = 200
 
     @ExperimentalTime
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -91,6 +93,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         }
 
         chatsViewModel = ChatsViewModel(roomId)
+        sharedPreferences = this.getSharedPreferences("com.example.campus_activity.ui.chat", MODE_PRIVATE)
 
         //  Variable assignment
         toolbar = findViewById(R.id.chat_toolbar)
@@ -114,7 +117,8 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         dateMaterialCard.visibility = View.INVISIBLE
 
         //  Set the background of the chat
-        window.setBackgroundDrawable(resources.getDrawable(R.drawable.background))
+        Log.i("BACKGROUND", sharedPreferences.getString("chatBackground", "")!!)
+        setChatBackground()
 
         //  Scroll to bottom on keyboard pop
         recyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
@@ -126,11 +130,16 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         setUpScrollToBottom()
 
         //  Send message
-        sendButton.setOnClickListener {
-            if(messageEditText.text?.isNotBlank() == true){
-                insertChatOnClick(messageEditText.text.toString())
-                messageEditText.setText("")
+        val user = firebaseAuth.currentUser
+        if(user?.email?.substring(0, 3) != "adm"){
+            sendButton.setOnClickListener {
+                if(messageEditText.text?.isNotBlank() == true){
+                    insertChatOnClick(messageEditText.text.toString())
+                    messageEditText.setText("")
+                }
             }
+        }else{
+            sendButton.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_block_24, this.theme))
         }
 
         addListener()
@@ -244,6 +253,22 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
             }
     }
 
+    //  Set chat background
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setChatBackground(){
+        val chatBackground = sharedPreferences.getString("chatBackground", "")
+        val drawable: Drawable? = try{
+            val inputStream = contentResolver.openInputStream(Uri.parse(chatBackground))
+            Log.i("BACKGROUND", "TRY STREAM")
+            Drawable.createFromStream(inputStream, "MEDIA")
+        }catch (e:Exception){
+            e.printStackTrace()
+            Log.i("BACKGROUND", "CATCH STREAM")
+            resources.getDrawable(R.drawable.background, this.theme)
+        }
+        window.setBackgroundDrawable(drawable)
+    }
+
     //  Options create
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_chat_activity, menu)
@@ -288,10 +313,55 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
 
                 true
             }
+            R.id.change_background -> {
+                //  Permission check
+                if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(this, arrayOf("android.permission.READ_EXTERNAL_STORAGE"), permissionCode)
+                }
+                else{
+                    selectImage()
+                }
+                true
+            }
             else -> false
         }
     }
 
+    private fun selectImage(){
+        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        startActivityForResult(gallery, pickImage)
+    }
+
+    //  On permission request result
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == permissionCode){
+            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                selectImage()
+            }
+        }
+    }
+
+    //  On image pick result
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == pickImage && resultCode == RESULT_OK){
+            val chatBackgroundUri = data?.data
+            sharedPreferences.edit().putString("chatBackground", chatBackgroundUri.toString()).apply()
+            try {
+                Log.i("BACKGROUND", sharedPreferences.getString("chatBackground", "")!!)
+                setChatBackground()
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        }
+    }
+
+    //  Chat long click options
     private fun report(position: Int){
         Log.i("Forward", position.toString())
     }
@@ -315,6 +385,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         Toast.makeText(this, "Message copied", Toast.LENGTH_SHORT).show()
     }
 
+    //  Recycler view item long click listeners
     override fun onReceiverItemLongClickHandler(position: Int, view: View?) {
         val items = arrayOf("Unsend", "Copy")
 
