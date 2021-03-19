@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.data.model.Result
@@ -111,9 +112,16 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         fabScrollToBottom.hide()
 
         //  Initialize action bar
+        toolbar.findViewById<TextView>(R.id.chat_title).text = roomName
+
+        Glide.with(this)
+            .load(room?.uri)
+            .placeholder(R.drawable.iiitm)
+            .into(toolbar.findViewById(R.id.roomIcon))
+
         setSupportActionBar(toolbar)
+        supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = roomName
         dateMaterialCard.visibility = View.INVISIBLE
 
         //  Set the background of the chat
@@ -127,6 +135,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
             }
         }
 
+        //  Set up scroll to bottom feature
         setUpScrollToBottom()
 
         //  Send message
@@ -142,6 +151,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
             sendButton.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_block_24, this.theme))
         }
 
+        //  Chats listener
         addListener()
     }
 
@@ -157,25 +167,19 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
                 }
                 is Result.Success.ChatLoad -> {
                     progressBar.visibility = View.INVISIBLE
-
                     val tmpArray = it.result as ArrayList<ChatModel>
-
                     chats = tmpArray
                     recyclerViewAdapter.setChats(tmpArray)
-
                     recyclerView.scrollToPosition(chats.size - 1)
                     handleDateCard()
                 }
                 is Result.Success.ChatAdd -> {
                     progressBar.visibility = View.INVISIBLE
-
                     val tmpArray = it.result as ArrayList<ChatModel>
-
                     for( chat in tmpArray ){
                         chats.add(chat)
                         recyclerViewAdapter.addChat(chat)
                     }
-
                     recyclerView.scrollToPosition(chats.size - 1)
                     handleDateCard()
                 }
