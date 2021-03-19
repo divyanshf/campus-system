@@ -127,6 +127,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
             }
         }
 
+        //  Set up scroll to bottom feature
         setUpScrollToBottom()
 
         //  Send message
@@ -142,6 +143,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
             sendButton.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_block_24, this.theme))
         }
 
+        //  Chats listener
         addListener()
     }
 
@@ -157,25 +159,19 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
                 }
                 is Result.Success.ChatLoad -> {
                     progressBar.visibility = View.INVISIBLE
-
                     val tmpArray = it.result as ArrayList<ChatModel>
-
                     chats = tmpArray
                     recyclerViewAdapter.setChats(tmpArray)
-
                     recyclerView.scrollToPosition(chats.size - 1)
                     handleDateCard()
                 }
                 is Result.Success.ChatAdd -> {
                     progressBar.visibility = View.INVISIBLE
-
                     val tmpArray = it.result as ArrayList<ChatModel>
-
                     for( chat in tmpArray ){
                         chats.add(chat)
                         recyclerViewAdapter.addChat(chat)
                     }
-
                     recyclerView.scrollToPosition(chats.size - 1)
                     handleDateCard()
                 }

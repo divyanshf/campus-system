@@ -1,6 +1,8 @@
 package com.example.campus_activity.ui.chat
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -36,6 +38,7 @@ class NewClub : AppCompatActivity() {
     lateinit var addLogo: ImageView
 
     val pickImage = 100
+    val CROP_PIC = 200
     private var imageUri : Uri? = null
     private var downloadUri : Uri? = null
 
@@ -65,7 +68,27 @@ class NewClub : AppCompatActivity() {
         if (resultCode == RESULT_OK && requestCode == pickImage) {
             imageUri = data?.data
             try {
-                addLogo.setImageURI(imageUri)
+//                addLogo.setImageURI(imageUri)
+                val tmpUri:Uri? = null
+                val cropIntent = Intent("com.android.camera.action.CROP")
+                cropIntent.setDataAndType(imageUri, "image/*")
+                cropIntent.putExtra("crop", true)
+                cropIntent.putExtra("aspectX", 1)
+                cropIntent.putExtra("aspectY", 1)
+                cropIntent.putExtra("outputX", 128)
+                cropIntent.putExtra("outputY", 128)
+                cropIntent.putExtra("return-data", true)
+                cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUri)
+                startActivityForResult(cropIntent, CROP_PIC)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        }
+        else if(resultCode == RESULT_OK && requestCode == CROP_PIC){
+            try {
+                imageUri = data?.data
+                val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri!!))
+                addLogo.setImageBitmap(bitmap)
             }catch (e:Exception){
                 e.printStackTrace()
             }

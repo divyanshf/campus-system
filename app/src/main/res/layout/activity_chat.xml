@@ -29,7 +29,9 @@
         android:background="?attr/colorPrimaryVariant"
         android:theme="@style/ChatToolbar"
         android:layout_alignParentTop="true"
-        app:titleTextColor="?attr/colorOnPrimary"/>
+        app:titleTextColor="?attr/colorOnPrimary">
+
+    </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/chat_date_mat_card"
