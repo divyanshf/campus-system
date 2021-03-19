@@ -25,11 +25,35 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/chat_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryVariant"
         android:theme="@style/ChatToolbar"
         android:layout_alignParentTop="true"
         app:titleTextColor="?attr/colorOnPrimary">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginVertical="5dp"
+            android:elevation="4dp"
+            app:cardCornerRadius="25dp"
+            app:cardBackgroundColor="@android:color/transparent">
+
+            <ImageView
+                android:id="@+id/roomIcon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/chat_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Campus"
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
 
     </androidx.appcompat.widget.Toolbar>
 

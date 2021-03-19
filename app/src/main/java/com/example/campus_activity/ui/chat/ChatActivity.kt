@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.data.model.Result
@@ -111,9 +112,16 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         fabScrollToBottom.hide()
 
         //  Initialize action bar
+        toolbar.findViewById<TextView>(R.id.chat_title).text = roomName
+
+        Glide.with(this)
+            .load(room?.uri)
+            .placeholder(R.drawable.iiitm)
+            .into(toolbar.findViewById(R.id.roomIcon))
+
         setSupportActionBar(toolbar)
+        supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = roomName
         dateMaterialCard.visibility = View.INVISIBLE
 
         //  Set the background of the chat
