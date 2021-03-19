@@ -78,7 +78,8 @@ constructor(
             snap["admin"] as String,
             snap["members"] as ArrayList<String>,
             "Some random last message",
-            Timestamp.now()
+            Timestamp.now(),
+            snap["uri"] as String
         )
     }
 }
