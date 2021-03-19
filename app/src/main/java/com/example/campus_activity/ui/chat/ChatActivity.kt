@@ -130,11 +130,16 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         setUpScrollToBottom()
 
         //  Send message
-        sendButton.setOnClickListener {
-            if(messageEditText.text?.isNotBlank() == true){
-                insertChatOnClick(messageEditText.text.toString())
-                messageEditText.setText("")
+        val user = firebaseAuth.currentUser
+        if(user?.email?.substring(0, 3) != "adm"){
+            sendButton.setOnClickListener {
+                if(messageEditText.text?.isNotBlank() == true){
+                    insertChatOnClick(messageEditText.text.toString())
+                    messageEditText.setText("")
+                }
             }
+        }else{
+            sendButton.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_block_24, this.theme))
         }
 
         addListener()
@@ -259,7 +264,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         }catch (e:Exception){
             e.printStackTrace()
             Log.i("BACKGROUND", "CATCH STREAM")
-            resources.getDrawable(R.drawable.background)
+            resources.getDrawable(R.drawable.background, this.theme)
         }
         window.setBackgroundDrawable(drawable)
     }
