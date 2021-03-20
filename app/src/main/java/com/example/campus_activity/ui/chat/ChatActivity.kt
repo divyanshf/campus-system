@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -36,7 +37,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
-import java.security.Permission
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -56,7 +56,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var firebaseFirestore: FirebaseFirestore
-    private lateinit var chatsViewModel : ChatsViewModel
+    private val chatsViewModel : ChatsViewModel by viewModels()
 
     //  Variable declaration
     private lateinit var toolbar:Toolbar
@@ -93,7 +93,6 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
             Toast.makeText(this, "Unidentified room!", Toast.LENGTH_SHORT).show()
         }
 
-        chatsViewModel = ChatsViewModel(roomId)
         sharedPreferences = this.getSharedPreferences("com.example.campus_activity.ui.chat", MODE_PRIVATE)
 
         //  Variable assignment
@@ -159,6 +158,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
     @ExperimentalTime
     private fun addListener(){
         //  Add chat listener
+        chatsViewModel.initialize(roomId)
         chatsViewModel.allChats.observe(this, {
             Log.i("Change", "Observed")
             when (it) {
@@ -249,12 +249,21 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
 
     //  Add new member to club
     private fun addNewMember(email:String){
-        firebaseFirestore.collection("rooms")
-            .document(room?.id!!)
-            .update("members", FieldValue.arrayUnion(email))
-            .addOnCompleteListener {
-                Toast.makeText(this, "Member added", Toast.LENGTH_SHORT).show()
+        chatsViewModel.addMember(roomId, roomName, email).observe(this, {
+            when (it) {
+                is Result.Success.Success -> {
+                    Toast.makeText(
+                        this,
+                        if (it.result) "Member added!" else "Already a member",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    chatsViewModel.addMember(roomId, roomName, email).removeObservers(this)
+                }
+                else -> {
+                    Toast.makeText(this, "This shouldn't have happened!", Toast.LENGTH_SHORT).show()
+                }
             }
+        })
     }
 
     //  Set chat background
