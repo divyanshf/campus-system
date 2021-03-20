@@ -113,6 +113,8 @@
             android:textColorHint="@color/gray"
             android:linksClickable="true"
             android:autoLink="all"
+            android:scrollbars="vertical"
+            android:isScrollContainer="true"
             android:inputType="textMultiLine|textAutoComplete"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -165,21 +165,13 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
                 is Result.Progress -> {
                     progressBar.visibility = View.VISIBLE
                 }
-                is Result.Success.ChatLoad -> {
+                is Result.Success -> {
                     progressBar.visibility = View.INVISIBLE
                     val tmpArray = it.result as ArrayList<ChatModel>
                     chats = tmpArray
+                    Log.i("Load", tmpArray.toString())
+                    Log.i("Load Chats", chats.toString())
                     recyclerViewAdapter.setChats(tmpArray)
-                    recyclerView.scrollToPosition(chats.size - 1)
-                    handleDateCard()
-                }
-                is Result.Success.ChatAdd -> {
-                    progressBar.visibility = View.INVISIBLE
-                    val tmpArray = it.result as ArrayList<ChatModel>
-                    for( chat in tmpArray ){
-                        chats.add(chat)
-                        recyclerViewAdapter.addChat(chat)
-                    }
                     recyclerView.scrollToPosition(chats.size - 1)
                     handleDateCard()
                 }
@@ -256,7 +248,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
     private fun addNewMember(email:String){
         chatsViewModel.addMember(roomId, roomName, email).observe(this, {
             when (it) {
-                is Result.Success.Success -> {
+                is Result.Success -> {
                     Toast.makeText(
                         this,
                         if (it.result) "Member added!" else "Already a member",

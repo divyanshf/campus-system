@@ -1,7 +1,5 @@
 package com.example.campus_activity.data.repository
 
-import android.util.Log
-import android.widget.Toast
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.data.model.Result
 import com.google.firebase.Timestamp
@@ -26,29 +24,12 @@ constructor(
         chatReference = firestore.collection("rooms").document(roomId).collection("chats")
         chatReference!!
             .addSnapshotListener { value, _ ->
-                var remove = false
                 try {
-                    for (chats in value?.documentChanges!!){
-                        if (chats.type == DocumentChange.Type.REMOVED){
-                            remove = true
-                            break
-                        }
+                    val array = createArrayFromSnaps(value?.documents)
+                    array.sortBy {
+                        it.timestamp
                     }
-                    if (!remove){
-                        val changes = createArrayFromChanges(value.documentChanges)
-                        Log.i("Changes", value.documentChanges[0].type.toString())
-                        changes.sortBy {
-                            it.timestamp
-                        }
-                        _allChats.value = Result.Success.ChatAdd(changes)
-                    }
-                    else{
-                        val array = createArrayFromSnaps(value.documents)
-                        array.sortBy {
-                            it.timestamp
-                        }
-                        _allChats.value = Result.Success.ChatLoad(array)
-                    }
+                    _allChats.value = Result.Success(array)
                 }catch (e:Exception){
                     e.printStackTrace()
                     _allChats.value = Result.Error("Empty Chat")
@@ -101,10 +82,10 @@ constructor(
                 .update("members", FieldValue.arrayUnion(email))
                 .await()
 
-            emit(Result.Success.Success(true))
+            emit(Result.Success(true))
         }
         else{
-            emit(Result.Success.Success(false))
+            emit(Result.Success(false))
         }
     }
 

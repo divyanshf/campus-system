@@ -127,7 +127,7 @@ class NewClub : AppCompatActivity() {
                     is Result.Progress -> {
                         Toast.makeText(this, "Upload In Progress. . .", Toast.LENGTH_SHORT).show()
                     }
-                    is Result.Success.Success -> {
+                    is Result.Success -> {
                         Toast.makeText(this, "Image Uploaded !", Toast.LENGTH_SHORT).show()
                         downloadUri = it.result
                         Log.i("Download", downloadUri.toString())
