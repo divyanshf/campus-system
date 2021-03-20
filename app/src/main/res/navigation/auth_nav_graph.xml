@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/auth_nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/auth_nav_graph"
     app:startDestination="@id/authFragment">
 
     <fragment
         android:id="@+id/authFragment"
         android:name="com.example.campus_activity.ui.auth.AuthFragment"
-        android:label="AuthFragment" >
+        android:label="AuthFragment">
         <action
             android:id="@+id/action_authFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -21,5 +22,5 @@
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.campus_activity.ui.auth.RegisterFragment"
-        android:label="RegisterFragment" />
+        android:label="RegisterFragment"/>
 </navigation>
