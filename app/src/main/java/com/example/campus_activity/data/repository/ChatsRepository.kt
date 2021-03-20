@@ -1,52 +1,35 @@
 package com.example.campus_activity.data.repository
 
-import android.util.Log
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.data.model.Result
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 
 class ChatsRepository
 constructor(
-    roomId: String
+    val firestore: FirebaseFirestore,
+    val firebaseAuth: FirebaseAuth
 ) {
 
-    private val firestoreRef = FirebaseFirestore.getInstance().collection("rooms").document(roomId).collection("chats")
-    private val firebaseAuth = FirebaseAuth.getInstance()
+    private var chatReference:CollectionReference? = null
     private val _allChats:MutableStateFlow<Result<List<ChatModel>>> = MutableStateFlow(Result.Progress)
     val allChats:StateFlow<Result<List<ChatModel>>> = _allChats
 
-    init {
-        firestoreRef
+    fun initialize(roomId:String) {
+        chatReference = firestore.collection("rooms").document(roomId).collection("chats")
+        chatReference!!
             .addSnapshotListener { value, _ ->
-                var remove = false
                 try {
-                    for (chats in value?.documentChanges!!){
-                        if (chats.type == DocumentChange.Type.REMOVED){
-                            remove = true
-                            break
-                        }
+                    val array = createArrayFromSnaps(value?.documents)
+                    array.sortBy {
+                        it.timestamp
                     }
-                    if (!remove){
-                        val changes = createArrayFromChanges(value?.documentChanges)
-                        Log.i("Changes", value?.documentChanges!![0].type.toString())
-                        changes.sortBy {
-                            it.timestamp
-                        }
-                        _allChats.value = Result.Success.ChatAdd(changes)
-                    }
-                    else{
-                        val array = createArrayFromSnaps(value.documents)
-                        array.sortBy {
-                            it.timestamp
-                        }
-                        _allChats.value = Result.Success.ChatLoad(array)
-                    }
+                    _allChats.value = Result.Success(array)
                 }catch (e:Exception){
                     e.printStackTrace()
                     _allChats.value = Result.Error("Empty Chat")
@@ -57,14 +40,53 @@ constructor(
     fun insertChatToDB(message:String){
         val user = firebaseAuth.currentUser
         val newChat = ChatModel("", user?.displayName!!, user.email!!, message, Timestamp.now())
-        firestoreRef
+        chatReference!!
             .add(createMapFromChat(newChat))
     }
 
     fun deleteChat(chatModel: ChatModel){
-        firestoreRef
+        chatReference!!
             .document(chatModel.id)
             .delete()
+    }
+
+    private suspend fun findMember(roomName: String, email: String) : Boolean{
+        val snap = firestore.collection("rooms")
+            .whereEqualTo("name", roomName)
+            .whereArrayContains("members", email)
+            .get()
+            .await()
+
+        return snap.documents.size != 0
+    }
+
+    private suspend fun checkAdmin(roomName: String, email: String) : Boolean{
+        val snap = firestore.collection("rooms")
+            .whereEqualTo("name", roomName)
+            .whereEqualTo("admin", email)
+            .get()
+            .await()
+
+        return snap.documents.size != 0
+    }
+
+    fun addMember(roomId:String, roomName:String, email:String) = flow<Result<Boolean>>{
+        var find = findMember(roomName, email)
+        if(!find){
+            find = checkAdmin(roomName, email)
+        }
+
+        if(!find){
+            firestore.collection("rooms")
+                .document(roomId)
+                .update("members", FieldValue.arrayUnion(email))
+                .await()
+
+            emit(Result.Success(true))
+        }
+        else{
+            emit(Result.Success(false))
+        }
     }
 
     private fun createArrayFromSnaps(snapList: MutableList<DocumentSnapshot>?):ArrayList<ChatModel>{

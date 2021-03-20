@@ -47,7 +47,7 @@ constructor(
         val downloadUri = storageRef.downloadUrl
             .await()
 
-        emit(Result.Success.Success(downloadUri))
+        emit(Result.Success(downloadUri))
     }
 
     fun getAllRooms(){

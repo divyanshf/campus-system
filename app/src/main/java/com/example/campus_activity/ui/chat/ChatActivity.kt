@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -36,7 +37,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
-import java.security.Permission
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -56,7 +56,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var firebaseFirestore: FirebaseFirestore
-    private lateinit var chatsViewModel : ChatsViewModel
+    private val chatsViewModel : ChatsViewModel by viewModels()
 
     //  Variable declaration
     private lateinit var toolbar:Toolbar
@@ -93,7 +93,6 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
             Toast.makeText(this, "Unidentified room!", Toast.LENGTH_SHORT).show()
         }
 
-        chatsViewModel = ChatsViewModel(roomId)
         sharedPreferences = this.getSharedPreferences("com.example.campus_activity.ui.chat", MODE_PRIVATE)
 
         //  Variable assignment
@@ -159,27 +158,20 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
     @ExperimentalTime
     private fun addListener(){
         //  Add chat listener
+        chatsViewModel.initialize(roomId)
         chatsViewModel.allChats.observe(this, {
             Log.i("Change", "Observed")
             when (it) {
                 is Result.Progress -> {
                     progressBar.visibility = View.VISIBLE
                 }
-                is Result.Success.ChatLoad -> {
+                is Result.Success -> {
                     progressBar.visibility = View.INVISIBLE
                     val tmpArray = it.result as ArrayList<ChatModel>
                     chats = tmpArray
+                    Log.i("Load", tmpArray.toString())
+                    Log.i("Load Chats", chats.toString())
                     recyclerViewAdapter.setChats(tmpArray)
-                    recyclerView.scrollToPosition(chats.size - 1)
-                    handleDateCard()
-                }
-                is Result.Success.ChatAdd -> {
-                    progressBar.visibility = View.INVISIBLE
-                    val tmpArray = it.result as ArrayList<ChatModel>
-                    for( chat in tmpArray ){
-                        chats.add(chat)
-                        recyclerViewAdapter.addChat(chat)
-                    }
                     recyclerView.scrollToPosition(chats.size - 1)
                     handleDateCard()
                 }
@@ -221,22 +213,27 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
 
     @ExperimentalTime
     private fun handleDateCard(){
-        val currentCompleteTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-        val currentTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        if(chats.size > 0){
+            val currentCompleteTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+            val currentTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
-        //  Handle date text
-        if (currentCompleteTopPosition == 0){
-            dateMaterialCard.visibility = View.INVISIBLE
+            //  Handle date text
+            if (currentCompleteTopPosition == 0){
+                dateMaterialCard.visibility = View.INVISIBLE
+            }
+            else{
+                dateMaterialCard.visibility = View.VISIBLE
+            }
+
+            try {
+                val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
+                dateTextView.text = day
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
         else{
-            dateMaterialCard.visibility = View.VISIBLE
-        }
-
-        try {
-            val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
-            dateTextView.text = day
-        }catch (e:Exception){
-            e.printStackTrace()
+            dateMaterialCard.visibility = View.INVISIBLE
         }
     }
 
@@ -249,12 +246,21 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
 
     //  Add new member to club
     private fun addNewMember(email:String){
-        firebaseFirestore.collection("rooms")
-            .document(room?.id!!)
-            .update("members", FieldValue.arrayUnion(email))
-            .addOnCompleteListener {
-                Toast.makeText(this, "Member added", Toast.LENGTH_SHORT).show()
+        chatsViewModel.addMember(roomId, roomName, email).observe(this, {
+            when (it) {
+                is Result.Success -> {
+                    Toast.makeText(
+                        this,
+                        if (it.result) "Member added!" else "Already a member",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    chatsViewModel.addMember(roomId, roomName, email).removeObservers(this)
+                }
+                else -> {
+                    Toast.makeText(this, "This shouldn't have happened!", Toast.LENGTH_SHORT).show()
+                }
             }
+        })
     }
 
     //  Set chat background

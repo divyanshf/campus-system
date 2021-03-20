@@ -29,4 +29,10 @@ class RepositoryModule {
         return RoomsRepository(firebaseFirestore, firebaseStorage)
     }
 
+    @Singleton
+    @Provides
+    fun provideChatsRepository(firebaseFirestore: FirebaseFirestore, firebaseAuth:FirebaseAuth):ChatsRepository{
+        return ChatsRepository(firebaseFirestore, firebaseAuth)
+    }
+
 }
