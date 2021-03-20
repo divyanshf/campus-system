@@ -221,22 +221,27 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
 
     @ExperimentalTime
     private fun handleDateCard(){
-        val currentCompleteTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-        val currentTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        if(chats.size > 0){
+            val currentCompleteTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+            val currentTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
-        //  Handle date text
-        if (currentCompleteTopPosition == 0){
-            dateMaterialCard.visibility = View.INVISIBLE
+            //  Handle date text
+            if (currentCompleteTopPosition == 0){
+                dateMaterialCard.visibility = View.INVISIBLE
+            }
+            else{
+                dateMaterialCard.visibility = View.VISIBLE
+            }
+
+            try {
+                val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
+                dateTextView.text = day
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
         else{
-            dateMaterialCard.visibility = View.VISIBLE
-        }
-
-        try {
-            val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
-            dateTextView.text = day
-        }catch (e:Exception){
-            e.printStackTrace()
+            dateMaterialCard.visibility = View.INVISIBLE
         }
     }
 
