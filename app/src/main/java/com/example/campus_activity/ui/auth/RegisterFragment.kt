@@ -1,15 +1,20 @@
 package com.example.campus_activity.ui.auth
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.example.campus_activity.R
 import com.example.campus_activity.ui.main.MainActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class RegisterFragment : Fragment() {
+class RegisterFragment : Fragment()  {
 
     private lateinit var editYear: EditText
     private lateinit var editBatch: EditText
@@ -28,6 +33,7 @@ class RegisterFragment : Fragment() {
     private lateinit var editName: EditText
     private lateinit var fireBaseAuth: FirebaseAuth
     private lateinit var btn: Button
+
 
     @SuppressLint("ResourceAsColor")
     override fun onCreateView(
@@ -50,6 +56,8 @@ class RegisterFragment : Fragment() {
         btn.setOnClickListener {
             signUpUser()
         }
+
+
         return view
     }
 
@@ -86,11 +94,20 @@ class RegisterFragment : Fragment() {
             return
         }
 
+
+
         fireBaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Toast.makeText(activity, "User is successfully created", Toast.LENGTH_SHORT)
-                        .show()
+
+                    if(batch == "adm" || batch == "ADM")
+                    {
+                        Toast.makeText(activity, "Registered Successfully ", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    else{
+                    verifyingEmail()
+                    }
 
                     //  Set the display name of the user
                     fireBaseAuth.currentUser?.updateProfile(
@@ -99,11 +116,9 @@ class RegisterFragment : Fragment() {
                             .build()
                     )
 
-                    //  Start main activity
-                    val intent = Intent(activity, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
+
+                    
+
                 } else {
                     Toast.makeText(activity, "Error creating User", Toast.LENGTH_SHORT).show()
                 }
@@ -113,6 +128,28 @@ class RegisterFragment : Fragment() {
     private fun rollToMail(y: String, b: String, r: String): String {
         return (b.toLowerCase(Locale.ROOT).plus("_").plus(y).plus(r).plus("@iiitm.ac.in"))
     }
+
+    private fun verifyingEmail()
+    {
+        val user = fireBaseAuth.currentUser
+
+        user!!.sendEmailVerification()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(activity, "Registered Successfully : Verification mail is sent to your College Email Address", Toast.LENGTH_SHORT)
+                        .show()
+
+                }
+                else
+                {
+                    Toast.makeText(activity, "Verification mail is not sent ", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+
+
+    }
+
 
 
 }
