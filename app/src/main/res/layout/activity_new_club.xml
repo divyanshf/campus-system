@@ -7,65 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<<<<<<< HEAD
-    <TextView
-        android:id="@+id/title_new_club"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/lustria"
-        android:text="@string/club"
-        android:textColor="@color/white"
-        android:textSize="50sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.013"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/club_logo_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:text="@string/club_logo"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/add_logo"
-        app:layout_constraintHorizontal_bias="0.019"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_new_club" />
-
-    <ImageView
-        android:id="@+id/club_logo_image_view"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:contentDescription="@string/club_logo"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/club_logo_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/club_logo_text_view" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="144dp"
-        android:layout_marginEnd="148dp"
-        android:layout_marginBottom="196dp"
-        android:src="@drawable/add_club_logo"
-        app:backgroundTint="@color/red"
-        app:layout_constraintBottom_toTopOf="@+id/club_Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.75"
-        app:maxImageSize="40dp" />
-
-    <TextView
-        android:id="@+id/club_name_heading"
-        android:layout_width="wrap_content"
-=======
     <RelativeLayout
         android:layout_width="match_parent"
->>>>>>> 3322265e2ff2a375e547d843b32b14580a31da9c
         android:layout_height="wrap_content"
         android:background="@drawable/maskgroup"
         android:orientation="vertical"
@@ -257,31 +200,16 @@
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </FrameLayout>
-
         </LinearLayout>
-
         <Button
-            android:id="@+id/add_New_Club"
-            android:layout_width="wrap_content"
+            android:id="@+id/add_club_button"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:backgroundTint="@color/white"
+            android:layout_below="@+id/admin_details"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/button"
-            android:elevation="100dp"
-            android:paddingHorizontal="50dp"
-            android:paddingVertical="10dp"
-            android:text="@string/add"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.494"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="InvalidId,MissingConstraints" />
-
-
+            android:textColor="@color/red"
+            android:text="Add"
+            android:elevation="100dp" />
     </RelativeLayout>
 </ScrollView>
