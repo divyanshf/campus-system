@@ -2,31 +2,30 @@ package com.example.campus_activity.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.RoomModel
 import com.example.campus_activity.data.repository.RoomsRepository
 import com.example.campus_activity.ui.adapter.RoomAdapter
 import com.example.campus_activity.ui.chat.NewClub
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 @AndroidEntryPoint
 class RoomListFragment : Fragment() {
@@ -40,6 +39,7 @@ class RoomListFragment : Fragment() {
     lateinit var roomsRepository: RoomsRepository
 
     private var user: FirebaseUser? = null
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var notMember: LinearLayout
     private lateinit var btnToClub : FloatingActionButton
@@ -59,6 +59,7 @@ class RoomListFragment : Fragment() {
         user = firebaseAuth.currentUser
         checkAdmin()
 
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         notMember = view.findViewById(R.id.not_member)
         btnToClub= view.findViewById(R.id.fabToNewClub)
         allRooms = roomsRepository.allRooms.asLiveData()
@@ -79,6 +80,13 @@ class RoomListFragment : Fragment() {
         }
 
         fetchingData()
+
+        swipeRefreshLayout.setOnRefreshListener {
+            fetchingData()
+            Timer("Refresh", false).schedule(500){
+                swipeRefreshLayout.isRefreshing = false
+            }
+        }
 
         return view
     }
@@ -107,6 +115,9 @@ class RoomListFragment : Fragment() {
                 if(isAdmin){
                     rooms = it
                     roomsAdapter.setFeed(it)
+                    if(rooms.isEmpty()){
+                        notMember.visibility = View.VISIBLE
+                    }
                 }
                 else{
                     val email = user?.email!!.toString()

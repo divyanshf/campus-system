@@ -6,5 +6,6 @@ data class FeedModel(
     var sender_name: String,
     var posted_by: String,
     var post: String,
+    var uri:String?,
     var timestamp: Timestamp
     )

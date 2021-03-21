@@ -3,4 +3,7 @@
     <item
         android:id="@+id/add_member"
         android:title="Add Member"/>
+    <item
+        android:id="@+id/change_background"
+        android:title="Change Background"/>
 </menu>

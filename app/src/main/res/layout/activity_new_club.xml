@@ -41,22 +41,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/club_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/club_logo"
-                android:textColor="@color/white"
-                android:layout_marginVertical="10dp"
-                android:textSize="24sp"/>
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginBottom="20dp"
-                android:src="@drawable/iiitm"/>
-
-            <TextView
                 android:id="@+id/club_name_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -69,28 +53,54 @@
                 app:layout_constraintHorizontal_bias="0.013"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/club_name_layout"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapSentences"
-                android:padding="2dp"
-                app:boxCornerRadiusBottomStart="10dp"
-                app:boxCornerRadiusTopEnd="10dp"
-                app:boxStrokeColor="@color/red"
-                app:placeholderTextColor="@color/red"
-                app:placeholderText="eg. UTHAAN, AASF"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/club_Name"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="10dp"
+                    android:elevation="4dp"
+                    app:cardCornerRadius="25dp"
+                    app:cardBackgroundColor="@android:color/transparent">
+
+                    <ImageView
+                        android:id="@+id/add_logo_button"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:src="@drawable/ic_baseline_image_24"
+                        android:layout_gravity="center" />
+
+                </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/club_name_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/gray_light"
-                    android:textSize="22sp"/>
+                    android:inputType="textCapSentences"
+                    android:padding="2dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxStrokeColor="@color/red"
+                    app:placeholderTextColor="@color/red"
+                    app:placeholderText="eg. UTHAAN, AASF"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/club_Name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/gray_light"
+                        android:textSize="22sp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 

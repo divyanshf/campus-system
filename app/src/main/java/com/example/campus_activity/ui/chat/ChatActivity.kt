@@ -1,28 +1,28 @@
 package com.example.campus_activity.ui.chat
 
+import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.*
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.provider.MediaStore
 import android.util.Log
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.ChatModel
 import com.example.campus_activity.data.model.Result
@@ -56,7 +56,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var firebaseFirestore: FirebaseFirestore
-    private lateinit var chatsViewModel : ChatsViewModel
+    private val chatsViewModel : ChatsViewModel by viewModels()
 
     //  Variable declaration
     private lateinit var toolbar:Toolbar
@@ -68,7 +68,10 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
     private lateinit var recyclerView:RecyclerView
     private lateinit var recyclerViewAdapter: ChatAdapter
     private lateinit var fabScrollToBottom:FloatingActionButton
+    private lateinit var sharedPreferences: SharedPreferences
     private var chats:ArrayList<ChatModel> = ArrayList()
+    private val pickImage = 100
+    private val permissionCode = 200
 
     @ExperimentalTime
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -90,7 +93,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
             Toast.makeText(this, "Unidentified room!", Toast.LENGTH_SHORT).show()
         }
 
-        chatsViewModel = ChatsViewModel(roomId)
+        sharedPreferences = this.getSharedPreferences("com.example.campus_activity.ui.chat", MODE_PRIVATE)
 
         //  Variable assignment
         toolbar = findViewById(R.id.chat_toolbar)
@@ -108,13 +111,21 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         fabScrollToBottom.hide()
 
         //  Initialize action bar
+        toolbar.findViewById<TextView>(R.id.chat_title).text = roomName
+
+        Glide.with(this)
+            .load(room?.uri)
+            .placeholder(R.drawable.iiitm)
+            .into(toolbar.findViewById(R.id.roomIcon))
+
         setSupportActionBar(toolbar)
+        supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = roomName
         dateMaterialCard.visibility = View.INVISIBLE
 
         //  Set the background of the chat
-        window.setBackgroundDrawable(resources.getDrawable(R.drawable.background))
+        Log.i("BACKGROUND", sharedPreferences.getString("chatBackground", "")!!)
+        setChatBackground()
 
         //  Scroll to bottom on keyboard pop
         recyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
@@ -123,16 +134,23 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
             }
         }
 
+        //  Set up scroll to bottom feature
         setUpScrollToBottom()
 
         //  Send message
-        sendButton.setOnClickListener {
-            if(messageEditText.text?.isNotBlank() == true){
-                insertChatOnClick(messageEditText.text.toString())
-                messageEditText.setText("")
+        val user = firebaseAuth.currentUser
+        if(user?.email?.substring(0, 3) != "adm"){
+            sendButton.setOnClickListener {
+                if(messageEditText.text?.isNotBlank() == true){
+                    insertChatOnClick(messageEditText.text.toString())
+                    messageEditText.setText("")
+                }
             }
+        }else{
+            sendButton.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_block_24, this.theme))
         }
 
+        //  Chats listener
         addListener()
     }
 
@@ -140,33 +158,20 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
     @ExperimentalTime
     private fun addListener(){
         //  Add chat listener
+        chatsViewModel.initialize(roomId)
         chatsViewModel.allChats.observe(this, {
             Log.i("Change", "Observed")
             when (it) {
                 is Result.Progress -> {
                     progressBar.visibility = View.VISIBLE
                 }
-                is Result.Success.ChatLoad -> {
+                is Result.Success -> {
                     progressBar.visibility = View.INVISIBLE
-
                     val tmpArray = it.result as ArrayList<ChatModel>
-
                     chats = tmpArray
+                    Log.i("Load", tmpArray.toString())
+                    Log.i("Load Chats", chats.toString())
                     recyclerViewAdapter.setChats(tmpArray)
-
-                    recyclerView.scrollToPosition(chats.size - 1)
-                    handleDateCard()
-                }
-                is Result.Success.ChatAdd -> {
-                    progressBar.visibility = View.INVISIBLE
-
-                    val tmpArray = it.result as ArrayList<ChatModel>
-
-                    for( chat in tmpArray ){
-                        chats.add(chat)
-                        recyclerViewAdapter.addChat(chat)
-                    }
-
                     recyclerView.scrollToPosition(chats.size - 1)
                     handleDateCard()
                 }
@@ -208,22 +213,27 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
 
     @ExperimentalTime
     private fun handleDateCard(){
-        val currentCompleteTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-        val currentTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        if(chats.size > 0){
+            val currentCompleteTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+            val currentTopPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
-        //  Handle date text
-        if (currentCompleteTopPosition == 0){
-            dateMaterialCard.visibility = View.INVISIBLE
+            //  Handle date text
+            if (currentCompleteTopPosition == 0){
+                dateMaterialCard.visibility = View.INVISIBLE
+            }
+            else{
+                dateMaterialCard.visibility = View.VISIBLE
+            }
+
+            try {
+                val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
+                dateTextView.text = day
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
         else{
-            dateMaterialCard.visibility = View.VISIBLE
-        }
-
-        try {
-            val day = recyclerViewAdapter.getDay(chats[currentTopPosition].timestamp)
-            dateTextView.text = day
-        }catch (e:Exception){
-            e.printStackTrace()
+            dateMaterialCard.visibility = View.INVISIBLE
         }
     }
 
@@ -236,12 +246,37 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
 
     //  Add new member to club
     private fun addNewMember(email:String){
-        firebaseFirestore.collection("rooms")
-            .document(room?.id!!)
-            .update("members", FieldValue.arrayUnion(email))
-            .addOnCompleteListener {
-                Toast.makeText(this, "Member added", Toast.LENGTH_SHORT).show()
+        chatsViewModel.addMember(roomId, roomName, email).observe(this, {
+            when (it) {
+                is Result.Success -> {
+                    Toast.makeText(
+                        this,
+                        if (it.result) "Member added!" else "Already a member",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    chatsViewModel.addMember(roomId, roomName, email).removeObservers(this)
+                }
+                else -> {
+                    Toast.makeText(this, "This shouldn't have happened!", Toast.LENGTH_SHORT).show()
+                }
             }
+        })
+    }
+
+    //  Set chat background
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setChatBackground(){
+        val chatBackground = sharedPreferences.getString("chatBackground", "")
+        val drawable: Drawable? = try{
+            val inputStream = contentResolver.openInputStream(Uri.parse(chatBackground))
+            Log.i("BACKGROUND", "TRY STREAM")
+            Drawable.createFromStream(inputStream, "MEDIA")
+        }catch (e:Exception){
+            e.printStackTrace()
+            Log.i("BACKGROUND", "CATCH STREAM")
+            resources.getDrawable(R.drawable.background, this.theme)
+        }
+        window.setBackgroundDrawable(drawable)
     }
 
     //  Options create
@@ -288,10 +323,55 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
 
                 true
             }
+            R.id.change_background -> {
+                //  Permission check
+                if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(this, arrayOf("android.permission.READ_EXTERNAL_STORAGE"), permissionCode)
+                }
+                else{
+                    selectImage()
+                }
+                true
+            }
             else -> false
         }
     }
 
+    private fun selectImage(){
+        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        startActivityForResult(gallery, pickImage)
+    }
+
+    //  On permission request result
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == permissionCode){
+            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                selectImage()
+            }
+        }
+    }
+
+    //  On image pick result
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == pickImage && resultCode == RESULT_OK){
+            val chatBackgroundUri = data?.data
+            sharedPreferences.edit().putString("chatBackground", chatBackgroundUri.toString()).apply()
+            try {
+                Log.i("BACKGROUND", sharedPreferences.getString("chatBackground", "")!!)
+                setChatBackground()
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        }
+    }
+
+    //  Chat long click options
     private fun report(position: Int){
         Log.i("Forward", position.toString())
     }
@@ -315,6 +395,7 @@ class ChatActivity : AppCompatActivity(), ChatAdapter.OnReceiverItemLongClick, C
         Toast.makeText(this, "Message copied", Toast.LENGTH_SHORT).show()
     }
 
+    //  Recycler view item long click listeners
     override fun onReceiverItemLongClickHandler(position: Int, view: View?) {
         val items = arrayOf("Unsend", "Copy")
 
