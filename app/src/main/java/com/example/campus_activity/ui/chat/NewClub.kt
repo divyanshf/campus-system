@@ -53,7 +53,7 @@ class NewClub : AppCompatActivity() {
         editYear = findViewById(R.id.year_nclub_edit_text)
         editBatch =findViewById(R.id.batch_nclub_edit_text)
         editRoll = findViewById(R.id.roll_nclub_edit_text)
-        btnAdd = findViewById(R.id.add_New_Club)
+        btnAdd = findViewById(R.id.add_club_button)
         addLogo = findViewById(R.id.add_logo_button)
 
         btnAdd.setOnClickListener {

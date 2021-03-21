@@ -28,12 +28,14 @@ class AuthFragment : Fragment(), View.OnClickListener {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_auth, container, false)
-
+        var skip: String = "false"
         firebaseauth = FirebaseAuth.getInstance()
             view.findViewById<FloatingActionButton>(R.id.skip_auth_button).setOnClickListener {
             val mainIntent = Intent(context, MainActivity::class.java)
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                skip = "true"
+                mainIntent.putExtra("skip", skip)
             startActivity(mainIntent)
         }
 

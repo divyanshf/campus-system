@@ -1,13 +1,11 @@
 
 package com.example.campus_activity.ui.main
 
-import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,13 +14,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.campus_activity.R
 import com.example.campus_activity.ui.auth.AuthActivity
-import com.example.campus_activity.ui.auth.AuthActivity_GeneratedInjector
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -41,10 +38,16 @@ class MainActivity : AppCompatActivity() {
         //  Initialize values
         val toolbar: Toolbar = findViewById(R.id.my_toolbar)
 
-         drawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_drawer)
+        val data = intent.getStringExtra("skip")
+        if(data == "true"){
+            navView = findViewById<View>(R.id.nav_drawer) as NavigationView
+            val nav_Menu: Menu = navView.getMenu()
+            nav_Menu.findItem(R.id.iclogout).isVisible = false
+        }
 
-        toggle = ActionBarDrawerToggle(this, drawerLayout,toolbar, R.string.open, R.string.close)
+        toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -68,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //  On navigation item select
-    private fun onNavItemSelect(item:MenuItem) : Boolean{
+    private fun onNavItemSelect(item: MenuItem) : Boolean{
         invalidateOptionsMenu()
         return when (item.itemId) {
             R.id.ichome -> {
