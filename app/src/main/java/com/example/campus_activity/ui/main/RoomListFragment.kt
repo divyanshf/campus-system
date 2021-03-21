@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.RoomModel
-import com.example.campus_activity.data.repository.RoomsRepository
+import com.example.campus_activity.data.viewmodels.RoomsViewModel
 import com.example.campus_activity.ui.adapter.RoomAdapter
 import com.example.campus_activity.ui.chat.NewClub
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -35,16 +34,14 @@ class RoomListFragment : Fragment() {
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var roomsAdapter: RoomAdapter
-    @Inject
-    lateinit var roomsRepository: RoomsRepository
 
     private var user: FirebaseUser? = null
+    private val roomsViewModel:RoomsViewModel by viewModels()
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var notMember: LinearLayout
     private lateinit var btnToClub : FloatingActionButton
     private var rooms:List<RoomModel> = ArrayList()
-    private lateinit var allRooms:LiveData<List<RoomModel>>
 
     //  Is the user college admin
     private var isAdmin = false
@@ -62,7 +59,6 @@ class RoomListFragment : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         notMember = view.findViewById(R.id.not_member)
         btnToClub= view.findViewById(R.id.fabToNewClub)
-        allRooms = roomsRepository.allRooms.asLiveData()
 
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.adapter = roomsAdapter
@@ -110,8 +106,8 @@ class RoomListFragment : Fragment() {
     private fun fetchingData()
     {
         if(user != null){
-            roomsRepository.getAllRooms()
-            allRooms.observe(viewLifecycleOwner, {
+            roomsViewModel.getAllRooms()
+            roomsViewModel.allRooms.observe(viewLifecycleOwner, {
                 if(isAdmin){
                     rooms = it
                     roomsAdapter.setFeed(it)

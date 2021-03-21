@@ -20,6 +20,7 @@ import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.model.RoomModel
 import com.example.campus_activity.data.repository.RoomsRepository
 import com.example.campus_activity.data.viewmodels.FeedsViewModel
+import com.example.campus_activity.data.viewmodels.RoomsViewModel
 import com.example.campus_activity.ui.adapter.FeedAdapter
 import com.example.campus_activity.ui.create.NewFeed
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -37,16 +38,14 @@ class HomeFragment : Fragment() {
     lateinit var feedsAdapter: FeedAdapter
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
-    @Inject
-    lateinit var roomsRepository: RoomsRepository
 
+    private val roomsViewModel: RoomsViewModel by viewModels()
     private val feedsViewModel: FeedsViewModel by viewModels()
     private lateinit var noFeeds: LinearLayout
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var feedsRecyclerView: RecyclerView
     private lateinit var addFeedButton: FloatingActionButton
     private lateinit var progressBar: ProgressBar
-    private lateinit var rooms:LiveData<List<RoomModel>>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +58,6 @@ class HomeFragment : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         addFeedButton = view.findViewById(R.id.add_feed)
         progressBar = view.findViewById(R.id.progress_bar)
-        rooms = roomsRepository.allRooms.asLiveData()
 
         feedsRecyclerView = view.findViewById(R.id.feeds_recycler_view)
         feedsRecyclerView.adapter = feedsAdapter

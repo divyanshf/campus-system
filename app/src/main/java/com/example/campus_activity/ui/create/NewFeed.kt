@@ -9,15 +9,12 @@ import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.FeedModel
 import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.model.RoomModel
-import com.example.campus_activity.data.repository.FeedsRepository
-import com.example.campus_activity.data.repository.RoomsRepository
 import com.example.campus_activity.data.viewmodels.FeedsViewModel
+import com.example.campus_activity.data.viewmodels.RoomsViewModel
 import com.example.campus_activity.ui.handler.ImageHelper
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
@@ -34,12 +31,10 @@ class NewFeed : AppCompatActivity() {
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
-    lateinit var roomsRepository: RoomsRepository
-    @Inject
     lateinit var imageHelper: ImageHelper
 
-    private lateinit var rooms: LiveData<List<RoomModel>>
     private val feedsViewModel:FeedsViewModel by viewModels()
+    private val roomsViewModel:RoomsViewModel by viewModels()
 
     private lateinit var addFeedCard : MaterialCardView
     private lateinit var newFeed: TextInputEditText
@@ -49,6 +44,7 @@ class NewFeed : AppCompatActivity() {
     private lateinit var spinner: Spinner
     private lateinit var uploadButton: Button
     private var imageUri:Uri? = null
+    private var rooms:ArrayList<RoomModel> = ArrayList()
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,8 +58,6 @@ class NewFeed : AppCompatActivity() {
         addImageButton = findViewById(R.id.add_image_button)
         spinner = findViewById(R.id.list_club_spinner)
         uploadButton  = findViewById(R.id.add_feed_button)
-
-        rooms = roomsRepository.allRooms.asLiveData()
 
         addImageButton.setOnClickListener {
             val intent = imageHelper.pickImage()
@@ -105,20 +99,19 @@ class NewFeed : AppCompatActivity() {
     private fun setUpAddFeed(){
         val user = firebaseAuth.currentUser
         if(user != null){
-            roomsRepository.getAllRooms()
-            rooms.observe(this, {
-                val testClubs = ArrayList<String>()
+            roomsViewModel.getAllRooms()
+            roomsViewModel.allRooms.observe(this, {
                 it.map { r ->
                     val checkString = r.members?.find {s ->
                         s == user.email
                     }
                     if(user.email!!.toString() == r.admin || checkString == user.email){
-                        testClubs.add(r.name?.toUpperCase(Locale.ROOT)!!)
+                        rooms.add(r)
                     }
                 }
 
                 //  Check if member or admin
-                if(testClubs.isEmpty()){
+                if(rooms.isEmpty()){
                     addFeedCard.visibility = View.GONE
                 }
                 else{
@@ -126,7 +119,9 @@ class NewFeed : AppCompatActivity() {
                     val adapter = ArrayAdapter(
                         this,
                         R.layout.list_item_add_feed_spinner,
-                        testClubs
+                        rooms.map { r ->
+                            r.name
+                        }
                     )
 
                     adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
@@ -149,11 +144,13 @@ class NewFeed : AppCompatActivity() {
     //  Add a new feed
     private fun addFeed(feedText:String, roomName:String){
         val user = firebaseAuth.currentUser
-        val feed = FeedModel(roomName, user?.displayName!!, feedText, null, Timestamp.now())
+        val spinnerPosition = spinner.selectedItemPosition
+        val feed = FeedModel(user?.displayName!!, feedText, rooms[spinnerPosition], null, Timestamp.now())
         if(imageUri == null){
             feedsViewModel.insertFeed(feed)
             finish()
-        }else{
+        }
+        else{
             feedsViewModel.uploadImage("feeds/", imageUri!!).observe(this, {
                 when (it) {
                     is Result.Progress -> {
