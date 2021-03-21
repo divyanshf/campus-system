@@ -108,7 +108,7 @@ class RegisterFragment : Fragment()  {
                     val member = hashMapOf<String ,String>()
                     member.put("name",name)
                     member.put("email",email)
-                    member.put("password",password)
+                    
                     member.put("roll no. ",year.plus(batch.toLowerCase()).plus("-").plus(roll))
 
                     database

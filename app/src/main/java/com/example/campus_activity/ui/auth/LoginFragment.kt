@@ -3,18 +3,21 @@ package com.example.campus_activity.ui.auth
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.example.campus_activity.R
 import com.example.campus_activity.ui.main.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -25,6 +28,8 @@ class LoginFragment : Fragment() {
     private lateinit var txtPassword: EditText
     private lateinit var btnlogin: Button
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var txtForgetPasswrod : TextView
+
 
     @SuppressLint("ResourceAsColor")
     override fun onCreateView(
@@ -41,9 +46,15 @@ class LoginFragment : Fragment() {
         editRoll = view.findViewById(R.id.roll_login_edit_text)
         txtPassword = view.findViewById(R.id.password_login_edit_text)
         btnlogin = view.findViewById(R.id.login_button)
+        txtForgetPasswrod= view.findViewById(R.id.txt_forget)
 
         btnlogin.setOnClickListener {
             login()
+        }
+
+        txtForgetPasswrod.setOnClickListener{
+            forgetPassword()
+
         }
         return view
     }
@@ -73,7 +84,6 @@ class LoginFragment : Fragment() {
             Toast.makeText(activity, "Blank Fields are not allowed", Toast.LENGTH_SHORT).show()
             return
         }
-
 
 
 
@@ -129,6 +139,43 @@ class LoginFragment : Fragment() {
 
     private fun rollToMail(y: String, b: String, r: String): String {
         return (b.toLowerCase(Locale.ROOT).plus("_").plus(y).plus(r).plus("@iiitm.ac.in"))
+    }
+
+    private fun forgetPassword(){
+        val year: String = editYear.text.toString()
+        val batch: String = editBatch.text.toString()
+        val roll: String = editRoll.text.toString()
+        val email: String = rollToMail(year, batch, roll)
+
+        if (year.length != 4) {
+
+            Toast.makeText(activity, "Wrong format", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (batch.length != 3) {
+            Toast.makeText(activity, "Wrong format", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (roll.length != 3) {
+
+            Toast.makeText(activity, "Wrong format", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (email.isBlank()) {
+            Toast.makeText(activity, "Blank Fields are not allowed", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        firebaseAuth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                    Log.i("Password Reset", "Email sent.")
+                    Toast.makeText(activity,"Reset password email has been sent to your email",Toast.LENGTH_SHORT).show()
+                }
+            }
+
+
     }
 
 }
