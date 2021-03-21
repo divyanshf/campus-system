@@ -30,7 +30,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="25dp"
             android:orientation="vertical"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
@@ -69,13 +69,13 @@
                         android:background="@color/gray"
                         android:hint="Year"
                         android:padding="2dp"
-                        app:placeholderText="20XX"
-                        app:placeholderTextColor="@color/red"
                         android:textColorHint="@color/white"
                         app:boxCornerRadiusBottomStart="10dp"
                         app:boxCornerRadiusTopEnd="10dp"
                         app:boxStrokeColor="@color/white"
-                        app:hintTextColor="@color/white">
+                        app:hintTextColor="@color/white"
+                        app:placeholderText="20XX"
+                        app:placeholderTextColor="@color/red">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/year_login_edit_text"
@@ -96,15 +96,15 @@
                         android:layout_weight="1"
                         android:background="@color/gray"
                         android:hint="Batch"
-                        app:placeholderText="XXX"
-                        app:placeholderTextColor="@color/red"
                         android:padding="2dp"
                         android:textColorHint="@color/white"
                         app:boxCornerRadiusBottomStart="10dp"
                         app:boxCornerRadiusTopEnd="10dp"
                         app:boxStrokeColor="@color/white"
+                        app:hintTextColor="@color/white"
+                        app:placeholderText="XXX"
 
-                        app:hintTextColor="@color/white">
+                        app:placeholderTextColor="@color/red">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/batch_login_edit_text"
@@ -123,19 +123,19 @@
                         android:layout_below="@id/register_title"
                         android:layout_gravity="left"
                         android:layout_weight="1"
-                        app:placeholderText="XXX"
-                        app:placeholderTextColor="@color/red"
                         android:background="@color/gray"
                         android:gravity="left"
                         android:hint="Roll No."
                         android:padding="2dp"
-
-
                         android:textColorHint="@color/white"
                         app:boxCornerRadiusBottomStart="10dp"
+
+
                         app:boxCornerRadiusTopEnd="10dp"
                         app:boxStrokeColor="@color/white"
-                        app:hintTextColor="@color/white">
+                        app:hintTextColor="@color/white"
+                        app:placeholderText="XXX"
+                        app:placeholderTextColor="@color/red">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/roll_login_edit_text"
@@ -174,14 +174,28 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/txt_forget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="7dp"
+                android:text="Forget Password?"
+                android:textColor="@color/white"
+
+
+                android:textSize="16dp" />
+
             <Button
                 android:id="@+id/login_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/password_edit_text_layout"
                 android:layout_alignParentEnd="true"
-                android:layout_gravity="right"
-                android:layout_marginTop="25dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/button"
                 android:elevation="100dp"
                 android:paddingHorizontal="50dp"
