@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/maskgroup">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ui.create.NewFeed">
+
+        <TextView
+            android:id="@+id/post_feed_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Post Feed"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            android:textSize="30sp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/add_feed_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_below="@+id/post_feed_text_view"
+            app:cardBackgroundColor="@color/gray"
+            app:cardCornerRadius="20dp"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
+
+                    <Spinner
+                        android:id="@+id/list_club_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/new_feed_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="300dp"
+                    android:layout_margin="10dp"
+                    android:padding="20dp"
+                    android:hint="@string/new_feed"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray_light"
+                    android:backgroundTint="@color/white"
+                    android:inputType="textMultiLine"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
+
+                    <ImageView
+                        android:id="@+id/post_image_view"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/ic_baseline_block_24"/>
+
+                    <ImageButton
+                        android:id="@+id/remove_image_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_baseline_cancel_24"
+                        android:layout_toEndOf="@+id/post_image_view"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/add_image_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:clickable="true"
+                    app:cardBackgroundColor="@color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ADD IMAGE"
+                        android:textColor="@color/red"
+                        android:padding="10dp"
+                        android:background="@android:color/transparent"
+                        app:drawableStartCompat="@drawable/ic_baseline_image_24"
+                        android:gravity="center"/>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <Button
+                    android:id="@+id/add_feed_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/upload"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
+
+</ScrollView>
