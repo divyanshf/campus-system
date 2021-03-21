@@ -19,8 +19,8 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideFeedsRepository(firebaseFirestore: FirebaseFirestore):FeedsRepository{
-        return FeedsRepository(firebaseFirestore)
+    fun provideFeedsRepository(firebaseFirestore: FirebaseFirestore, firebaseStorage: FirebaseStorage):FeedsRepository{
+        return FeedsRepository(firebaseFirestore, firebaseStorage)
     }
 
     @Singleton

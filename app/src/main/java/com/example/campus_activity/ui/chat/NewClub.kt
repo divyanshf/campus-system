@@ -16,6 +16,7 @@ import com.example.campus_activity.R
 import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.repository.RoomsRepository
 import com.example.campus_activity.data.viewmodels.RoomsViewModel
+import com.example.campus_activity.ui.handler.ImageHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -27,6 +28,8 @@ class NewClub : AppCompatActivity() {
 
     @Inject
     lateinit var roomsRepository: RoomsRepository
+    @Inject
+    lateinit var imageHelper: ImageHelper
 
     private val roomsViewModel : RoomsViewModel by viewModels()
 
@@ -37,8 +40,8 @@ class NewClub : AppCompatActivity() {
     private lateinit var editRoll: EditText
     lateinit var addLogo: ImageView
 
-    val pickImage = 100
-    val CROP_PIC = 200
+//    val pickImage = 100
+//    val CROP_PIC = 200
     private var imageUri : Uri? = null
     private var downloadUri : Uri? = null
 
@@ -57,34 +60,24 @@ class NewClub : AppCompatActivity() {
             adding()
         }
         addLogo.setOnClickListener{
-            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            startActivityForResult(gallery, pickImage)
+            val intent = imageHelper.pickImage()
+            startActivityForResult(intent, imageHelper.PICK_IMAGE)
         }
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == pickImage) {
+        if (resultCode == RESULT_OK && requestCode == imageHelper.PICK_IMAGE) {
             imageUri = data?.data
             try {
-//                addLogo.setImageURI(imageUri)
-                val tmpUri:Uri? = null
-                val cropIntent = Intent("com.android.camera.action.CROP")
-                cropIntent.setDataAndType(imageUri, "image/*")
-                cropIntent.putExtra("crop", true)
-                cropIntent.putExtra("aspectX", 1)
-                cropIntent.putExtra("aspectY", 1)
-                cropIntent.putExtra("outputX", 128)
-                cropIntent.putExtra("outputY", 128)
-                cropIntent.putExtra("return-data", true)
-                cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUri)
-                startActivityForResult(cropIntent, CROP_PIC)
+                val cropIntent = imageHelper.cropImage(imageUri!!, 1, 1)
+                startActivityForResult(cropIntent, imageHelper.CROP_IMAGE)
             }catch (e:Exception){
                 e.printStackTrace()
             }
         }
-        else if(resultCode == RESULT_OK && requestCode == CROP_PIC){
+        else if(resultCode == RESULT_OK && requestCode == imageHelper.CROP_IMAGE){
             try {
                 imageUri = data?.data
                 val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri!!))
