@@ -19,6 +19,8 @@ import com.example.campus_activity.R
 import com.example.campus_activity.ui.main.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -33,6 +35,8 @@ class RegisterFragment : Fragment()  {
     private lateinit var editName: EditText
     private lateinit var fireBaseAuth: FirebaseAuth
     private lateinit var btn: Button
+    private lateinit var firebaseFirestore: FirebaseFirestore
+    lateinit var database : CollectionReference
 
 
     @SuppressLint("ResourceAsColor")
@@ -49,7 +53,8 @@ class RegisterFragment : Fragment()  {
         editPassword = view.findViewById(R.id.password_edit_text)
         editConPassword = view.findViewById(R.id.confirm_password_edit_text)
         fireBaseAuth = FirebaseAuth.getInstance()
-
+        firebaseFirestore = FirebaseFirestore.getInstance()
+        database = firebaseFirestore.collection("users")
         btn = view.findViewById(R.id.register_button)
 
 
@@ -99,6 +104,20 @@ class RegisterFragment : Fragment()  {
         fireBaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
+
+                    val member = hashMapOf<String ,String>()
+                    member.put("name",name)
+                    member.put("email",email)
+                    member.put("password",password)
+                    member.put("roll no. ",year.plus(batch.toLowerCase()).plus("-").plus(roll))
+
+                    database
+                        .add(member)
+                        .addOnSuccessListener {
+                            Log.i("Memberd Success", it.toString())
+                        }
+
+
 
                     if(batch == "adm" || batch == "ADM")
                     {
