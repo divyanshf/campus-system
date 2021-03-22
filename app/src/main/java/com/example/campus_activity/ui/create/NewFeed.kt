@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
@@ -70,6 +71,8 @@ class NewFeed : AppCompatActivity() {
             removeImage.visibility = View.GONE
         }
 
+        window.setBackgroundDrawable(resources.getDrawable(R.drawable.maskgroup, this.theme))
+
         setUpAddFeed()
     }
 
@@ -101,12 +104,14 @@ class NewFeed : AppCompatActivity() {
         if(user != null){
             roomsViewModel.getAllRooms()
             roomsViewModel.allRooms.observe(this, {
+                rooms.clear()
                 it.map { r ->
                     val checkString = r.members?.find {s ->
                         s == user.email
                     }
                     if(user.email!!.toString() == r.admin || checkString == user.email){
                         rooms.add(r)
+                        Log.i("Room", r.name!!)
                     }
                 }
 
