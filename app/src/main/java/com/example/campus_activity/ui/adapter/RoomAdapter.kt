@@ -69,9 +69,11 @@ constructor(
         }
 
         override fun onClick(v: View?) {
-            val intent = Intent(v?.context, ChatActivity::class.java)
-            intent.putExtra("room", rooms[adapterPosition])
-            v?.context?.startActivity(intent)
+            if(rooms[adapterPosition].members?.contains(user?.email) == true || rooms[adapterPosition].admin == user?.email){
+                val intent = Intent(v?.context, ChatActivity::class.java)
+                intent.putExtra("room", rooms[adapterPosition])
+                v?.context?.startActivity(intent)
+            }
         }
     }
 
