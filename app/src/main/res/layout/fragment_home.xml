@@ -48,7 +48,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="20dp"
-            android:src="@drawable/icadd"/>
+            android:src="@drawable/icadd"
+            android:visibility="gone"/>
 
         <ProgressBar
             android:id="@+id/progress_bar"

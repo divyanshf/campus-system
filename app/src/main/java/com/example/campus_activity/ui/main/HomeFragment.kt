@@ -2,6 +2,7 @@ package com.example.campus_activity.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,9 +26,11 @@ import com.example.campus_activity.ui.adapter.FeedAdapter
 import com.example.campus_activity.ui.create.NewFeed
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 @AndroidEntryPoint
@@ -42,10 +45,12 @@ class HomeFragment : Fragment() {
     private val roomsViewModel: RoomsViewModel by viewModels()
     private val feedsViewModel: FeedsViewModel by viewModels()
     private lateinit var noFeeds: LinearLayout
+    private var rooms:ArrayList<RoomModel> = ArrayList()
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var feedsRecyclerView: RecyclerView
     private lateinit var addFeedButton: FloatingActionButton
     private lateinit var progressBar: ProgressBar
+    private var user: FirebaseUser? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +58,8 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+
+        user = firebaseAuth.currentUser
 
         noFeeds = view.findViewById(R.id.no_feeds)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
@@ -73,12 +80,40 @@ class HomeFragment : Fragment() {
             }
         }
 
-        addFeedButton.setOnClickListener {
-            val intent = Intent(requireContext(), NewFeed::class.java)
-            startActivity(intent)
-        }
+        loadRooms()
 
         return view
+    }
+
+    //  Check members
+    private fun loadRooms(){
+        if(user != null){
+            roomsViewModel.getAllRooms()
+            roomsViewModel.allRooms.observe(viewLifecycleOwner, {
+                when(it){
+                    is Result.Success -> {
+                        rooms.clear()
+                        it.result.map { r ->
+                            if (user?.email!!.toString() == r.admin || r.members?.contains(user?.email) == true) {
+                                rooms.add(r)
+                            }
+                        }
+                        if(rooms.size > 0){
+                            addFeedButton.visibility = View.VISIBLE
+
+                            addFeedButton.setOnClickListener {
+                                val intent = Intent(requireContext(), NewFeed::class.java)
+                                intent.putParcelableArrayListExtra("Rooms", rooms)
+                                startActivity(intent)
+                            }
+                        }
+                    }
+                    else -> {
+                        Log.i("Check", "Working on it . . .")
+                    }
+                }
+            })
+        }
     }
 
     //  Load feeds

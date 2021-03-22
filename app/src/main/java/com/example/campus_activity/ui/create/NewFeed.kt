@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.FeedModel
 import com.example.campus_activity.data.model.Result
@@ -35,7 +36,6 @@ class NewFeed : AppCompatActivity() {
     lateinit var imageHelper: ImageHelper
 
     private val feedsViewModel:FeedsViewModel by viewModels()
-    private val roomsViewModel:RoomsViewModel by viewModels()
 
     private lateinit var addFeedCard : MaterialCardView
     private lateinit var newFeed: TextInputEditText
@@ -45,12 +45,19 @@ class NewFeed : AppCompatActivity() {
     private lateinit var spinner: Spinner
     private lateinit var uploadButton: Button
     private var imageUri:Uri? = null
-    private var rooms:ArrayList<RoomModel> = ArrayList()
+    private var rooms:ArrayList<RoomModel>? = ArrayList()
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_feed)
+
+        try {
+            rooms = intent.getParcelableArrayListExtra("Rooms")
+        }catch (e:Exception){
+            e.printStackTrace()
+            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
+        }
 
         addFeedCard = findViewById(R.id.add_feed_card)
         newFeed = findViewById(R.id.new_feed_text_view)
@@ -101,55 +108,36 @@ class NewFeed : AppCompatActivity() {
 
     private fun setUpAddFeed(){
         val user = firebaseAuth.currentUser
-        roomsViewModel.getAllRooms()
-        roomsViewModel.allRooms.observe(this, {
-            when (it) {
-                is Result.Progress -> {
-                    Toast.makeText(this, "Loading . . .", Toast.LENGTH_SHORT).show()
-                }
-                is Result.Success -> {
-                    rooms.clear()
-                    it.result.map { r ->
-                        val checkString = r.members?.find { s ->
-                            s == user?.email
-                        }
-                        if (user?.email!!.toString() == r.admin || checkString == user.email) {
-                            rooms.add(r)
-                            Log.i("Room", r.name!!)
-                        }
-                    }
 
-                    val adapter = ArrayAdapter(
-                        this,
-                        R.layout.list_item_add_feed_spinner,
-                        rooms.map { r ->
-                            r.name
-                        }
-                    )
+        val listName = rooms?.map {
+            it.name
+        }
 
-                    adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
-                    spinner.adapter = adapter
-                    spinner.setSelection(0, true)
+        Log.i("List", listName.toString())
 
-                    uploadButton.setOnClickListener {
-                        if (newFeed.text.toString() != "" && spinner.selectedItem.toString() != "") {
-                            addFeed(newFeed.text.toString())
-                            newFeed.setText("")
-                        }
-                    }
-                }
-                else -> {
-                    Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
-                }
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.list_item_add_feed_spinner,
+            listName!!
+        )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+        spinner.adapter = adapter
+        spinner.setSelection(0, true)
+
+        uploadButton.setOnClickListener {
+            if (newFeed.text.toString() != "" && spinner.selectedItem.toString() != "") {
+                addFeed(newFeed.text.toString())
+                newFeed.setText("")
             }
-        })
+        }
     }
 
     //  Add a new feed
     private fun addFeed(feedText:String){
         val user = firebaseAuth.currentUser
         val spinnerPosition = spinner.selectedItemPosition
-        val feed = FeedModel(user?.displayName!!, feedText, rooms[spinnerPosition], null, Timestamp.now())
+        val feed = FeedModel(user?.displayName!!, feedText, rooms?.get(spinnerPosition)!!, null, Timestamp.now())
         if(imageUri == null){
             feedsViewModel.insertFeed(feed)
             finish()
