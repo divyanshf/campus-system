@@ -72,7 +72,6 @@ class FeedsRepository
             hashMap["name"] as String,
             hashMap["admin"] as String,
             hashMap["members"] as ArrayList<String>,
-            hashMap["lastMessage"] as String,
             hashMap["timestamp"] as Timestamp?,
             hashMap["uri"] as String,
         )

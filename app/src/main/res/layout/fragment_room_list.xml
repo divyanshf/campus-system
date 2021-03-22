@@ -29,6 +29,12 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/card_room" />
 
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
         <LinearLayout
             android:id="@+id/not_member"
             android:layout_width="wrap_content"

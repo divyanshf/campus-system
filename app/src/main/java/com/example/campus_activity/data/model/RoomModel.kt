@@ -3,8 +3,7 @@ package com.example.campus_activity.data.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.Timestamp
-import java.net.URI
-import java.util.ArrayList
+import java.util.*
 
 
 data class RoomModel(
@@ -12,7 +11,6 @@ data class RoomModel(
     var name: String?,
     var admin:String?,
     var members: ArrayList<String>?,
-    var lastMessage: String?,
     var timestamp: Timestamp?,
     var uri: String?
     ) : Parcelable {
@@ -21,18 +19,15 @@ data class RoomModel(
         parcel.readString(),
         parcel.readString(),
         parcel.createStringArrayList(),
-        parcel.readString(),
         parcel.readParcelable(Timestamp::class.java.classLoader),
         parcel.readString(),
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeString(admin)
         parcel.writeStringList(members)
-        parcel.writeString(lastMessage)
         parcel.writeParcelable(timestamp, flags)
         parcel.writeString(uri)
     }

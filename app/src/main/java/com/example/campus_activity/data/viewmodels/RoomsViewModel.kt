@@ -4,10 +4,12 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.model.RoomModel
 import com.example.campus_activity.data.repository.RoomsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,7 +18,7 @@ class RoomsViewModel
     constructor(
         private val repository: RoomsRepository
     ):ViewModel() {
-    val allRooms:LiveData<List<RoomModel>> = repository.allRooms.asLiveData()
+    val allRooms:LiveData<Result<List<RoomModel>>> = repository.allRooms.asLiveData()
 
     fun uploadImage(path:String, uri: Uri):LiveData<Result<Uri>>{
         return repository.uploadImage(path, uri).asLiveData()
@@ -27,6 +29,8 @@ class RoomsViewModel
     }
 
     fun getAllRooms(){
-        repository.getAllRooms()
+        viewModelScope.launch {
+            repository.getAllRooms()
+        }
     }
 }

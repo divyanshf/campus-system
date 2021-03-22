@@ -21,7 +21,7 @@ constructor(
     private val firebaseFirestore: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
 ){
-    var allRooms:MutableStateFlow<List<RoomModel>> = MutableStateFlow(ArrayList())
+    var allRooms:MutableStateFlow<Result<List<RoomModel>>> = MutableStateFlow(Result.Progress)
 
     fun uploadClub(roomName:String, admin:String, members:ArrayList<String>, imageUri: Uri?){
         val members = hashMapOf(
@@ -50,25 +50,23 @@ constructor(
         emit(Result.Success(downloadUri))
     }
 
-    fun getAllRooms(){
-        CoroutineScope(Dispatchers.IO).launch {
-            val snaps = firebaseFirestore.collection("rooms")
-                .get()
-                .await()
+    suspend fun getAllRooms(){
+        val snaps = firebaseFirestore.collection("rooms")
+            .get()
+            .await()
 
-            val list:ArrayList<RoomModel> = ArrayList()
-            snaps.documents.map {
-                try {
-                    val room = getRoom(it)
-                    list.add(room)
-                }
-                catch (e:Exception){
-                    e.printStackTrace()
-                }
+        val list:ArrayList<RoomModel> = ArrayList()
+        snaps.documents.map {
+            try {
+                val room = getRoom(it)
+                list.add(room)
             }
-
-            allRooms.emit(list)
+            catch (e:Exception){
+                e.printStackTrace()
+            }
         }
+
+        allRooms.emit(Result.Success(list))
     }
 
     private fun getRoom(snap:DocumentSnapshot):RoomModel{
@@ -77,7 +75,6 @@ constructor(
             snap["name"] as String,
             snap["admin"] as String,
             snap["members"] as ArrayList<String>,
-            "Some random last message",
             Timestamp.now(),
             snap["uri"] as String
         )

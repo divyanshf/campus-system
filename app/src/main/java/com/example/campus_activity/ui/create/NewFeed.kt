@@ -101,26 +101,24 @@ class NewFeed : AppCompatActivity() {
 
     private fun setUpAddFeed(){
         val user = firebaseAuth.currentUser
-        if(user != null){
-            roomsViewModel.getAllRooms()
-            roomsViewModel.allRooms.observe(this, {
-                rooms.clear()
-                it.map { r ->
-                    val checkString = r.members?.find {s ->
-                        s == user.email
-                    }
-                    if(user.email!!.toString() == r.admin || checkString == user.email){
-                        rooms.add(r)
-                        Log.i("Room", r.name!!)
-                    }
+        roomsViewModel.getAllRooms()
+        roomsViewModel.allRooms.observe(this, {
+            when (it) {
+                is Result.Progress -> {
+                    Toast.makeText(this, "Loading . . .", Toast.LENGTH_SHORT).show()
                 }
+                is Result.Success -> {
+                    rooms.clear()
+                    it.result.map { r ->
+                        val checkString = r.members?.find { s ->
+                            s == user?.email
+                        }
+                        if (user?.email!!.toString() == r.admin || checkString == user.email) {
+                            rooms.add(r)
+                            Log.i("Room", r.name!!)
+                        }
+                    }
 
-                //  Check if member or admin
-                if(rooms.isEmpty()){
-                    addFeedCard.visibility = View.GONE
-                }
-                else{
-                    addFeedCard.visibility = View.VISIBLE
                     val adapter = ArrayAdapter(
                         this,
                         R.layout.list_item_add_feed_spinner,
@@ -134,20 +132,21 @@ class NewFeed : AppCompatActivity() {
                     spinner.setSelection(0, true)
 
                     uploadButton.setOnClickListener {
-                        if(newFeed.text.toString() != "" && spinner.selectedItem.toString() != ""){
-                            addFeed(newFeed.text.toString(), spinner.selectedItem.toString())
+                        if (newFeed.text.toString() != "" && spinner.selectedItem.toString() != "") {
+                            addFeed(newFeed.text.toString())
                             newFeed.setText("")
                         }
                     }
                 }
-            })
-        }else{
-            addFeedCard.visibility = View.GONE
-        }
+                else -> {
+                    Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
     //  Add a new feed
-    private fun addFeed(feedText:String, roomName:String){
+    private fun addFeed(feedText:String){
         val user = firebaseAuth.currentUser
         val spinnerPosition = spinner.selectedItemPosition
         val feed = FeedModel(user?.displayName!!, feedText, rooms[spinnerPosition], null, Timestamp.now())
