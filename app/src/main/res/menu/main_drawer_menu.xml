@@ -23,6 +23,10 @@
                     android:id="@+id/iclogout"
                     android:icon="@drawable/ic_baseline_subdirectory_arrow_right_24"
                     android:title="Logout" />
+                <item
+                    android:id="@+id/iclogin"
+                    android:icon="@drawable/ic_baseline_login_24"
+                    android:title="Sign in" />
             </menu>
 
 

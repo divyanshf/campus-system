@@ -13,18 +13,17 @@
         android:roundIcon="@drawable/iiitm"
         android:supportsRtl="true"
         android:theme="@style/Theme.Campus">
-        <activity android:name=".ui.create.NewFeed"></activity>
-        <!-- <activity android:name=".ui.chat.NewClubActivity"></activity> -->
-        <activity android:name=".ui.chat.NewClub"></activity>
+        <activity android:name=".ui.create.NewFeed"/>
+        <activity android:name=".ui.chat.NewClub"/>
         <activity android:name=".ui.chat.ChatActivity" />
-        <activity android:name=".ui.main.MainActivity">
+        <activity android:name=".ui.main.MainActivity"/>
+        <activity android:name=".ui.auth.AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.auth.AuthActivity"></activity>
 
         <meta-data
             android:name="preloaded_fonts"

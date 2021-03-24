@@ -34,8 +34,6 @@ class AuthFragment : Fragment(), View.OnClickListener {
             val mainIntent = Intent(context, MainActivity::class.java)
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                skip = "true"
-                mainIntent.putExtra("skip", skip)
             startActivity(mainIntent)
         }
 

@@ -35,17 +35,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val user = firebaseAuth.currentUser
+
         //  Initialize values
         val toolbar: Toolbar = findViewById(R.id.my_toolbar)
 
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_drawer)
-        val data = intent.getStringExtra("skip")
-        if(data == "true"){
-            navView = findViewById<View>(R.id.nav_drawer) as NavigationView
-            val nav_Menu: Menu = navView.getMenu()
-            nav_Menu.findItem(R.id.iclogout).isVisible = false
-        }
+
+        navView.menu.findItem(R.id.iclogin).isVisible = (user == null)
+        navView.menu.findItem(R.id.iclogout).isVisible = (user != null)
 
         toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -100,6 +99,13 @@ class MainActivity : AppCompatActivity() {
                     .setNegativeButton("No", null)
                     .show()
                 drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+            R.id.iclogin -> {
+                val mainIntent = Intent(this, AuthActivity::class.java)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(mainIntent)
                 true
             }
             else -> false
