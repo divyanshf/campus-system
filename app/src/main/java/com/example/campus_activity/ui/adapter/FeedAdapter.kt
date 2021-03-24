@@ -26,7 +26,7 @@ constructor(
     private val VIEW_WITHOUT_IMAGE = 1
     private val VIEW_WITH_IMAGE = 2
     private val mInflater = LayoutInflater.from(context)
-    private var feeds:List<FeedModel> = ArrayList<FeedModel>()
+    private var feeds:List<FeedModel> = ArrayList()
 
     override fun getItemViewType(position: Int): Int {
         return if(feeds[position].uri == null){
@@ -83,12 +83,19 @@ constructor(
         private val postTextView:TextView = view.findViewById(R.id.feed_content_text_view)
         private val timeTextView : TextView = view.findViewById(R.id.time_text_view)
         private val dateTextView : TextView = view.findViewById(R.id.date_text_view)
+        private val logoView:ImageView = view.findViewById(R.id.logo)
 
         @SuppressLint("SetTextI18n")
         fun bind(feedModel: FeedModel){
-            senderTextView.text = feedModel.sender_name
+            senderTextView.text = feedModel.roomModel.name
             posterByTextView.text = "Posted by ${feedModel.posted_by}"
             postTextView.text = feedModel.post
+
+            //  Room image
+            Glide.with(context)
+                .load(feedModel.roomModel.uri)
+                .placeholder(R.drawable.iiitm)
+                .into(logoView)
 
             val timestamp = feedModel.timestamp.toDate().toString()
             val date = timestamp.substring(4, 10) + ", " + timestamp.substring(timestamp.length - 4, timestamp.length)
@@ -105,16 +112,24 @@ constructor(
         private val postTextView:TextView = view.findViewById(R.id.feed_content_text_view)
         private val timeTextView : TextView = view.findViewById(R.id.time_text_view)
         private val dateTextView : TextView = view.findViewById(R.id.date_text_view)
+        private val logoView:ImageView = view.findViewById(R.id.logo)
 
         @SuppressLint("SetTextI18n")
         fun bind(feedModel: FeedModel){
-            senderTextView.text = feedModel.sender_name
+            senderTextView.text = feedModel.roomModel.name
             posterByTextView.text = "Posted by ${feedModel.posted_by}"
             postTextView.text = feedModel.post
 
+            //  Image inside the post
             Glide.with(context)
                 .load(feedModel.uri)
                 .into(postImageView)
+
+            //  Room image
+            Glide.with(context)
+                .load(feedModel.roomModel.uri)
+                .placeholder(R.drawable.iiitm)
+                .into(logoView)
 
             val timestamp = feedModel.timestamp.toDate().toString()
             val date = timestamp.substring(4, 10) + ", " + timestamp.substring(timestamp.length - 4, timestamp.length)

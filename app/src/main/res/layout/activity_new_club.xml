@@ -210,31 +210,16 @@
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </FrameLayout>
-
         </LinearLayout>
-
         <Button
-            android:id="@+id/add_New_Club"
-            android:layout_width="wrap_content"
+            android:id="@+id/add_club_button"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:backgroundTint="@color/white"
+            android:layout_below="@+id/admin_details"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/button"
-            android:elevation="100dp"
-            android:paddingHorizontal="50dp"
-            android:paddingVertical="10dp"
-            android:text="@string/add"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.494"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="InvalidId,MissingConstraints" />
-
-
+            android:textColor="@color/red"
+            android:text="Add"
+            android:elevation="100dp" />
     </RelativeLayout>
 </ScrollView>

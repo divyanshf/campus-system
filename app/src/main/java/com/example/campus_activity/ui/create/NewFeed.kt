@@ -5,19 +5,18 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
+import androidx.room.Room
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.FeedModel
 import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.model.RoomModel
-import com.example.campus_activity.data.repository.FeedsRepository
-import com.example.campus_activity.data.repository.RoomsRepository
 import com.example.campus_activity.data.viewmodels.FeedsViewModel
+import com.example.campus_activity.data.viewmodels.RoomsViewModel
 import com.example.campus_activity.ui.handler.ImageHelper
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
@@ -34,11 +33,8 @@ class NewFeed : AppCompatActivity() {
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
-    lateinit var roomsRepository: RoomsRepository
-    @Inject
     lateinit var imageHelper: ImageHelper
 
-    private lateinit var rooms: LiveData<List<RoomModel>>
     private val feedsViewModel:FeedsViewModel by viewModels()
 
     private lateinit var addFeedCard : MaterialCardView
@@ -49,11 +45,19 @@ class NewFeed : AppCompatActivity() {
     private lateinit var spinner: Spinner
     private lateinit var uploadButton: Button
     private var imageUri:Uri? = null
+    private var rooms:ArrayList<RoomModel>? = ArrayList()
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_feed)
+
+        try {
+            rooms = intent.getParcelableArrayListExtra("Rooms")
+        }catch (e:Exception){
+            e.printStackTrace()
+            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
+        }
 
         addFeedCard = findViewById(R.id.add_feed_card)
         newFeed = findViewById(R.id.new_feed_text_view)
@@ -62,8 +66,6 @@ class NewFeed : AppCompatActivity() {
         addImageButton = findViewById(R.id.add_image_button)
         spinner = findViewById(R.id.list_club_spinner)
         uploadButton  = findViewById(R.id.add_feed_button)
-
-        rooms = roomsRepository.allRooms.asLiveData()
 
         addImageButton.setOnClickListener {
             val intent = imageHelper.pickImage()
@@ -75,6 +77,8 @@ class NewFeed : AppCompatActivity() {
             postImage.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_block_24, this.theme))
             removeImage.visibility = View.GONE
         }
+
+        window.setBackgroundDrawable(resources.getDrawable(R.drawable.maskgroup, this.theme))
 
         setUpAddFeed()
     }
@@ -104,56 +108,41 @@ class NewFeed : AppCompatActivity() {
 
     private fun setUpAddFeed(){
         val user = firebaseAuth.currentUser
-        if(user != null){
-            roomsRepository.getAllRooms()
-            rooms.observe(this, {
-                val testClubs = ArrayList<String>()
-                it.map { r ->
-                    val checkString = r.members?.find {s ->
-                        s == user.email
-                    }
-                    if(user.email!!.toString() == r.admin || checkString == user.email){
-                        testClubs.add(r.name?.toUpperCase(Locale.ROOT)!!)
-                    }
-                }
 
-                //  Check if member or admin
-                if(testClubs.isEmpty()){
-                    addFeedCard.visibility = View.GONE
-                }
-                else{
-                    addFeedCard.visibility = View.VISIBLE
-                    val adapter = ArrayAdapter(
-                        this,
-                        R.layout.list_item_add_feed_spinner,
-                        testClubs
-                    )
+        val listName = rooms?.map {
+            it.name
+        }
 
-                    adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
-                    spinner.adapter = adapter
-                    spinner.setSelection(0, true)
+        Log.i("List", listName.toString())
 
-                    uploadButton.setOnClickListener {
-                        if(newFeed.text.toString() != "" && spinner.selectedItem.toString() != ""){
-                            addFeed(newFeed.text.toString(), spinner.selectedItem.toString())
-                            newFeed.setText("")
-                        }
-                    }
-                }
-            })
-        }else{
-            addFeedCard.visibility = View.GONE
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.list_item_add_feed_spinner,
+            listName!!
+        )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+        spinner.adapter = adapter
+        spinner.setSelection(0, true)
+
+        uploadButton.setOnClickListener {
+            if (newFeed.text.toString() != "" && spinner.selectedItem.toString() != "") {
+                addFeed(newFeed.text.toString())
+                newFeed.setText("")
+            }
         }
     }
 
     //  Add a new feed
-    private fun addFeed(feedText:String, roomName:String){
+    private fun addFeed(feedText:String){
         val user = firebaseAuth.currentUser
-        val feed = FeedModel(roomName, user?.displayName!!, feedText, null, Timestamp.now())
+        val spinnerPosition = spinner.selectedItemPosition
+        val feed = FeedModel(user?.displayName!!, feedText, rooms?.get(spinnerPosition)!!, null, Timestamp.now())
         if(imageUri == null){
             feedsViewModel.insertFeed(feed)
             finish()
-        }else{
+        }
+        else{
             feedsViewModel.uploadImage("feeds/", imageUri!!).observe(this, {
                 when (it) {
                     is Result.Progress -> {

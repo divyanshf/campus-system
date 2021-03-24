@@ -2,20 +2,22 @@ package com.example.campus_activity.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.campus_activity.R
+import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.model.RoomModel
-import com.example.campus_activity.data.repository.RoomsRepository
+import com.example.campus_activity.data.viewmodels.RoomsViewModel
 import com.example.campus_activity.ui.adapter.RoomAdapter
 import com.example.campus_activity.ui.chat.NewClub
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -35,16 +37,15 @@ class RoomListFragment : Fragment() {
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var roomsAdapter: RoomAdapter
-    @Inject
-    lateinit var roomsRepository: RoomsRepository
 
     private var user: FirebaseUser? = null
+    private val roomsViewModel:RoomsViewModel by viewModels()
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var progressBar:ProgressBar
     private lateinit var recyclerView: RecyclerView
     private lateinit var notMember: LinearLayout
     private lateinit var btnToClub : FloatingActionButton
     private var rooms:List<RoomModel> = ArrayList()
-    private lateinit var allRooms:LiveData<List<RoomModel>>
 
     //  Is the user college admin
     private var isAdmin = false
@@ -60,9 +61,9 @@ class RoomListFragment : Fragment() {
         checkAdmin()
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        progressBar = view.findViewById(R.id.progress_bar)
         notMember = view.findViewById(R.id.not_member)
         btnToClub= view.findViewById(R.id.fabToNewClub)
-        allRooms = roomsRepository.allRooms.asLiveData()
 
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.adapter = roomsAdapter
@@ -79,7 +80,6 @@ class RoomListFragment : Fragment() {
             }
         }
 
-        fetchingData()
 
         swipeRefreshLayout.setOnRefreshListener {
             fetchingData()
@@ -87,6 +87,8 @@ class RoomListFragment : Fragment() {
                 swipeRefreshLayout.isRefreshing = false
             }
         }
+
+        fetchingData()
 
         return view
     }
@@ -102,44 +104,25 @@ class RoomListFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        fetchingData()
-        super.onResume()
-    }
-
     private fun fetchingData()
     {
-        if(user != null){
-            roomsRepository.getAllRooms()
-            allRooms.observe(viewLifecycleOwner, {
-                if(isAdmin){
-                    rooms = it
-                    roomsAdapter.setFeed(it)
-                    if(rooms.isEmpty()){
-                        notMember.visibility = View.VISIBLE
-                    }
+        roomsViewModel.getAllRooms()
+        roomsViewModel.allRooms.observe(viewLifecycleOwner, {
+            when (it) {
+                is Result.Progress -> {
+                    progressBar.visibility = View.VISIBLE
+                    notMember.visibility = View.GONE
                 }
-                else{
-                    val email = user?.email!!.toString()
-                    val tempRooms = ArrayList<RoomModel>()
-                    it.map { r ->
-                        val checkString = r.members?.find {s ->
-                            s == user?.email
-                        }
-                        if(r.admin == email || checkString == user?.email){
-                            tempRooms.add(r)
-                        }
-                    }
-                    rooms = tempRooms
-                    roomsAdapter.setFeed(tempRooms)
-                    if(rooms.isEmpty()){
-                        notMember.visibility = View.VISIBLE
-                    }
+                is Result.Success -> {
+                    Log.i("Success", it.result.toString())
+                    progressBar.visibility = View.GONE
+                    rooms = it.result
+                    roomsAdapter.setRooms(it.result)
                 }
-            })
-        }
-        else{
-            notMember.visibility = View.VISIBLE
-        }
+                else -> {
+                    Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 }

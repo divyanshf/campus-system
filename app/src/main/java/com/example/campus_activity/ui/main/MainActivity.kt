@@ -1,13 +1,11 @@
 
 package com.example.campus_activity.ui.main
 
-import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,13 +14,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.campus_activity.R
 import com.example.campus_activity.ui.auth.AuthActivity
-import com.example.campus_activity.ui.auth.AuthActivity_GeneratedInjector
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -38,13 +35,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val user = firebaseAuth.currentUser
+
         //  Initialize values
         val toolbar: Toolbar = findViewById(R.id.my_toolbar)
 
-         drawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_drawer)
 
-        toggle = ActionBarDrawerToggle(this, drawerLayout,toolbar, R.string.open, R.string.close)
+        navView.menu.findItem(R.id.iclogin).isVisible = (user == null)
+        navView.menu.findItem(R.id.iclogout).isVisible = (user != null)
+
+        toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //  On navigation item select
-    private fun onNavItemSelect(item:MenuItem) : Boolean{
+    private fun onNavItemSelect(item: MenuItem) : Boolean{
         invalidateOptionsMenu()
         return when (item.itemId) {
             R.id.ichome -> {
@@ -97,6 +99,13 @@ class MainActivity : AppCompatActivity() {
                     .setNegativeButton("No", null)
                     .show()
                 drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+            R.id.iclogin -> {
+                val mainIntent = Intent(this, AuthActivity::class.java)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(mainIntent)
                 true
             }
             else -> false

@@ -3,6 +3,7 @@ package com.example.campus_activity.data.repository
 import android.net.Uri
 import com.example.campus_activity.data.model.FeedModel
 import com.example.campus_activity.data.model.Result
+import com.example.campus_activity.data.model.RoomModel
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -57,11 +58,22 @@ class FeedsRepository
 
     private fun getFeed(snap:DocumentSnapshot) : FeedModel{
         return FeedModel(
-            snap["sender_name"] as String,
             snap["posted_by"] as String,
             snap["post"] as String,
+            getRoomModel(snap["roomModel"] as HashMap<String, *>),
             snap["uri"] as String?,
             snap["timestamp"] as Timestamp
+        )
+    }
+
+    private fun getRoomModel(hashMap: HashMap<String, *>):RoomModel{
+        return RoomModel(
+            hashMap["id"] as String,
+            hashMap["name"] as String,
+            hashMap["admin"] as String,
+            hashMap["members"] as ArrayList<String>,
+            hashMap["timestamp"] as Timestamp?,
+            hashMap["uri"] as String,
         )
     }
 }
