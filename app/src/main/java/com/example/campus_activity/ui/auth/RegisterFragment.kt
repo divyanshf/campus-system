@@ -105,20 +105,6 @@ class RegisterFragment : Fragment()  {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
 
-                    val member = hashMapOf<String ,String>()
-                    member.put("name",name)
-                    member.put("email",email)
-                    
-                    member.put("roll no. ",year.plus(batch.toLowerCase()).plus("-").plus(roll))
-
-                    database
-                        .add(member)
-                        .addOnSuccessListener {
-                            Log.i("Memberd Success", it.toString())
-                        }
-
-
-
                     if(batch == "adm" || batch == "ADM")
                     {
                         Toast.makeText(activity, "Registered Successfully ", Toast.LENGTH_SHORT)
@@ -134,9 +120,6 @@ class RegisterFragment : Fragment()  {
                             .setDisplayName(name)
                             .build()
                     )
-
-
-                    
 
                 } else {
                     Toast.makeText(activity, "Error creating User", Toast.LENGTH_SHORT).show()
