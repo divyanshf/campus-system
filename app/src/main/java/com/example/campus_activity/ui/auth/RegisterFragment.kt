@@ -94,6 +94,10 @@ class RegisterFragment : Fragment()  {
             Toast.makeText(activity, "Blank Fields are not allowed", Toast.LENGTH_SHORT).show()
             return
         }
+        if (password.length <= 6 ) {
+            Toast.makeText(activity, "Password Too short", Toast.LENGTH_SHORT).show()
+            return
+        }
         if (password != confirmPass) {
             Toast.makeText(activity, "Password do not match", Toast.LENGTH_SHORT).show()
             return
