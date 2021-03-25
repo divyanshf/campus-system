@@ -109,6 +109,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/gray_dark"
+            android:linksClickable="true"
+            android:autoLink="web"
+            android:textColorLink="@color/blue"
             android:text="@string/text"
             android:padding="10dp"
             android:layout_marginBottom="20dp"/>
