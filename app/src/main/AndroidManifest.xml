@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".CampusApplication"
@@ -14,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Campus">
         <activity android:name=".ui.create.NewFeed"/>
-        <activity android:name=".ui.chat.NewClub"/>
+        <activity android:name=".ui.create.NewClub"/>
         <activity android:name=".ui.chat.ChatActivity" />
         <activity android:name=".ui.main.MainActivity"/>
         <activity android:name=".ui.auth.AuthActivity">
@@ -24,7 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

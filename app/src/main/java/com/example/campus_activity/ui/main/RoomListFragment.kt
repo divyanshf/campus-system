@@ -19,7 +19,7 @@ import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.model.RoomModel
 import com.example.campus_activity.data.viewmodels.RoomsViewModel
 import com.example.campus_activity.ui.adapter.RoomAdapter
-import com.example.campus_activity.ui.chat.NewClub
+import com.example.campus_activity.ui.create.NewClub
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

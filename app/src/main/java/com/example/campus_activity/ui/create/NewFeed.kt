@@ -22,6 +22,8 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
@@ -88,15 +90,19 @@ class NewFeed : AppCompatActivity() {
         if (resultCode == RESULT_OK && requestCode == imageHelper.PICK_IMAGE) {
             imageUri = data?.data
             try {
-                val cropIntent = imageHelper.cropImage(imageUri!!, 16, 9)
-                startActivityForResult(cropIntent, imageHelper.CROP_IMAGE)
+                CropImage.activity(imageUri!!)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(16, 9)
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+                    .start(this)
             }catch (e:Exception){
                 e.printStackTrace()
             }
         }
-        else if(resultCode == RESULT_OK && requestCode == imageHelper.CROP_IMAGE){
+        else if(resultCode == RESULT_OK && requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             try {
-                imageUri = data?.data
+                var result = CropImage.getActivityResult(data)
+                imageUri = result.uri
                 val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri!!))
                 postImage.setImageBitmap(bitmap)
                 removeImage.visibility = View.VISIBLE

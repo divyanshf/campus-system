@@ -1,23 +1,21 @@
-package com.example.campus_activity.ui.chat
+package com.example.campus_activity.ui.create
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.campus_activity.R
 import com.example.campus_activity.data.model.Result
 import com.example.campus_activity.data.repository.RoomsRepository
 import com.example.campus_activity.data.viewmodels.RoomsViewModel
 import com.example.campus_activity.ui.handler.ImageHelper
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
@@ -71,15 +69,19 @@ class NewClub : AppCompatActivity() {
         if (resultCode == RESULT_OK && requestCode == imageHelper.PICK_IMAGE) {
             imageUri = data?.data
             try {
-                val cropIntent = imageHelper.cropImage(imageUri!!, 1, 1)
-                startActivityForResult(cropIntent, imageHelper.CROP_IMAGE)
+                CropImage.activity(imageUri!!)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(1, 1)
+                    .setCropShape(CropImageView.CropShape.OVAL)
+                    .start(this)
             }catch (e:Exception){
                 e.printStackTrace()
             }
         }
-        else if(resultCode == RESULT_OK && requestCode == imageHelper.CROP_IMAGE){
+        else if(resultCode == RESULT_OK && requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             try {
-                imageUri = data?.data
+                var result = CropImage.getActivityResult(data)
+                imageUri = result.uri
                 val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri!!))
                 addLogo.setImageBitmap(bitmap)
             }catch (e:Exception){
