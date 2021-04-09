@@ -13,7 +13,7 @@
         android:background="@drawable/maskgroup"
         android:orientation="vertical"
         android:padding="20dp"
-        tools:context=".ui.chat.NewClub">
+        tools:context=".ui.create.NewClub">
 
         <TextView
             android:id="@+id/title_new_club"
