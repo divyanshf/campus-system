@@ -52,7 +52,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You are not a member of any club"
+                android:text="There are no clubs."
                 android:textSize="30sp"
                 android:textAlignment="center"
                 android:layout_marginHorizontal="20dp"/>
