@@ -118,6 +118,12 @@ class RoomListFragment : Fragment() {
                     progressBar.visibility = View.GONE
                     rooms = it.result
                     roomsAdapter.setRooms(it.result)
+                    if(rooms.isEmpty()){
+                        notMember.visibility = View.VISIBLE
+                    }
+                    else{
+                        notMember.visibility = View.GONE
+                    }
                 }
                 else -> {
                     Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
