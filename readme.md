@@ -30,7 +30,7 @@ It is an application that manages clubs within our institution.
 - Build and run the app.
 
 ## APK
- You can download the zip file of apk [here](https://github.com/DivyanshFalodiya/campus-system/files/6391617/Campus.zip)
+ You can download the zip file of apk [here](https://github.com/DivyanshFalodiya/campus-system/files/6391861/Campus.zip)
  
  ## Screenshots
 
