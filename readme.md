@@ -11,11 +11,11 @@ It is an application that manages clubs within our institution.
 
 ## Technologies / Libraries Used
 - Kotlin.
-- Firebase.
+- [Firebase.](https://firebase.google.com)
 - [Image Cropper](https://github.com/ArthurHub/Android-Image-Cropper).
-- Glide.
-- Hilt.
-- Android Jetpack.
+- [Glide.](https://github.com/bumptech/glide)
+- [Hilt.](https://dagger.dev/hilt/)
+- [Android Jetpack.](https://developer.android.com/jetpack)
 - XML.
 
 ## Concepts
@@ -24,12 +24,13 @@ It is an application that manages clubs within our institution.
 
 ## Guideline
 - Download and open the project in android studio.
-- Create a new firebase project.
-- Connect the firebase project and the android project.
+- Create a new firebase project for android application.
+- Download the google-services.json file when creating the firebase project.
+- Place it in './app/'.
 - Build and run the app.
 
 ## APK
- You can download the zip file of apk [here](https://github.com/DivyanshFalodiya/campus-system/files/6372798/Campus2.0.apk.zip)
+ You can download the zip file of apk [here](https://github.com/DivyanshFalodiya/campus-system/files/6391617/Campus.zip)
  
  ## Screenshots
 
@@ -41,9 +42,9 @@ It is an application that manages clubs within our institution.
      <td>Login Screen</td>
   </tr>
   <tr>
-    <td><img src="" width=200 ></td>
-    <td><img src="" width=200 ></td>
-   <td><img src="" width=200 ></td>
+    <td><img src="https://cdn.discordapp.com/attachments/813666371807608886/836681281440841798/Screenshot_20210428-003510.png" width=200 ></td>
+    <td><img src="https://cdn.discordapp.com/attachments/813666371807608886/836681280963870730/Screenshot_20210428-003522.png" width=200 ></td>
+   <td><img src="https://cdn.discordapp.com/attachments/813666371807608886/836681281176862800/Screenshot_20210428-003516.png" width=200 ></td>
   </tr>
  </table>
  
@@ -51,15 +52,23 @@ It is an application that manages clubs within our institution.
  
  <table>
   <tr>
-    <td>Search Screen</td>
-   <td>Wishlist Screen</td>
-   <td>Watching Screen</td>
-   <td>Watched Screen</td>
+    <td>Home Screen</td>
+   <td>Club List Screen</td>
+   <td>Chat Screen</td>
   </tr>
   <tr>
-    <td><img src="" width=200 ></td>
-    <td><img src="" width=200 ></td>
-    <td><img src="" width=200 ></td>
-    <td><img src="" width=200 ></td>
+    <td><img src="https://cdn.discordapp.com/attachments/813666371807608886/836681280703299654/Screenshot_20210428-003941.png" width=200 ></td>
+    <td><img src="https://cdn.discordapp.com/attachments/813666371807608886/836681281713602620/Screenshot_20210428-003454.png" width=200 ></td>
+    <td><img src="https://cdn.discordapp.com/attachments/813666371807608886/836681406624694312/Screenshot_20210428-003446.png" width=200 ></td>
+  </tr>
+ </table>
+ <table>
+  <tr>
+    <td>Post Feed Screen</td>
+   <td>Add Club Screen</td>
+  </tr>
+  <tr>
+    <td><img src="https://cdn.discordapp.com/attachments/813666371807608886/836681280417955880/Screenshot_20210428-004025.png" width=200 ></td>
+    <td><img src="https://cdn.discordapp.com/attachments/813666371807608886/836681280191987742/Screenshot_20210428-004130.png" width=200 ></td>
   </tr>
  </table>
