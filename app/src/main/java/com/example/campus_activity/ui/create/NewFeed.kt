@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -149,7 +150,7 @@ class NewFeed : AppCompatActivity() {
             finish()
         }
         else{
-            feedsViewModel.uploadImage("feeds/", imageUri!!).observe(this, {
+            feedsViewModel.uploadImage("feeds/${feed.roomModel.name}/${File(imageUri!!.path).name}", imageUri!!).observe(this, {
                 when (it) {
                     is Result.Progress -> {
                         Toast.makeText(this, "Uploading Feed . . .", Toast.LENGTH_SHORT).show()

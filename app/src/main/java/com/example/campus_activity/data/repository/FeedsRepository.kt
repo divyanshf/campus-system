@@ -29,7 +29,7 @@ class FeedsRepository
     }
 
     fun uploadImage(path:String, imageUri: Uri) = flow<Result<Uri>>{
-        val storageRef = firebaseStorage.reference.child(path)
+        val storageRef = firebaseStorage.reference.child("${path}/${imageUri}")
         emit(Result.Progress)
 
         storageRef.putFile(imageUri)
