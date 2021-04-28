@@ -11,11 +11,11 @@ It is an application that manages clubs within our institution.
 
 ## Technologies / Libraries Used
 - Kotlin.
-- Firebase.
+- [Firebase.](https://firebase.google.com)
 - [Image Cropper](https://github.com/ArthurHub/Android-Image-Cropper).
-- Glide.
-- Hilt.
-- Android Jetpack.
+- [Glide.](https://github.com/bumptech/glide)
+- [Hilt.](https://dagger.dev/hilt/)
+- [Android Jetpack.](https://developer.android.com/jetpack)
 - XML.
 
 ## Concepts
@@ -24,8 +24,9 @@ It is an application that manages clubs within our institution.
 
 ## Guideline
 - Download and open the project in android studio.
-- Create a new firebase project.
-- Connect the firebase project and the android project.
+- Create a new firebase project for android application.
+- Download the google-services.json file when creating the firebase project.
+- Place it in './app/'.
 - Build and run the app.
 
 ## APK
